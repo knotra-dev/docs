@@ -66,6 +66,13 @@ another repository path, set both `NEXT_PUBLIC_APP_URL` and
 `NEXT_PUBLIC_BASE_PATH` when building; see `.env.example`. No server or secret is
 required. For a local production preview, serve `apps/web/out` mounted at `/docs/`.
 
+## Screenshots
+
+Guide screenshots show the bundled sample workspace and a completed guided demo
+from desktop commit `70d68bda859e6afb4a5c1d0b862954ee4e2e6802`. They contain
+prewritten sample data and no model calls. Refresh `apps/web/public/images/` when
+the matching screens change.
+
 ## Template source and license
 
 Based on OpenDocs commit `a4fc4d31a768a0f980314530ab1fafa13caf1fba`.

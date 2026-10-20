@@ -17,7 +17,7 @@ import { DocLinks } from '@/components/docs/links'
 import { allDocs } from 'contentlayer/generated'
 import { defaultLocale, locales } from '@/config/i18n'
 import { Mdx } from '@/components/docs/mdx'
-import { absoluteUrl } from '@/lib/utils'
+import { absoluteUrl, cn } from '@/lib/utils'
 
 export const dynamicParams = false
 
@@ -92,8 +92,18 @@ export default async function DocPage(props: {
   const toc = await getTableOfContents(doc.body.raw)
 
   return (
-    <article className="relative min-w-0 py-8 lg:gap-12 lg:py-12 xl:grid xl:grid-cols-[minmax(0,1fr)_200px]">
-      <div className="mx-auto w-full min-w-0 max-w-[70ch]">
+    <article
+      className={cn(
+        'relative min-w-0 py-8 lg:gap-12 lg:py-12',
+        doc.toc && 'xl:grid xl:grid-cols-[minmax(0,1fr)_200px]'
+      )}
+    >
+      <div
+        className={cn(
+          'mx-auto w-full min-w-0',
+          doc.toc ? 'max-w-[70ch]' : 'max-w-4xl'
+        )}
+      >
         <DocBreadcrumb
           doc={doc}
           messages={{

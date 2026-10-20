@@ -144,6 +144,22 @@
   margin-left: auto;
 }
 
+.mdx > p {
+  max-width: 65ch;
+}
+
+.mdx details {
+  padding: 1.25rem;
+  margin: 2rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.mdx summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
 @media (min-width: 1400px) {
   .container {
     max-width: 1400px;

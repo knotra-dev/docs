@@ -39,8 +39,16 @@ import { tr } from './mdx-components/tr'
 import { ul } from './mdx-components/ul'
 import { a } from './mdx-components/a'
 import { p } from './mdx-components/p'
+import { WorkflowWalkthrough } from './workflow-walkthrough'
+import { WorkspaceTour } from './workspace-tour'
+import { FirstSteps, HowItWorks, CommonQuestions } from './visual-guides'
 
 const components = {
+  WorkflowWalkthrough,
+  WorkspaceTour,
+  FirstSteps,
+  HowItWorks,
+  CommonQuestions,
   Image,
   Alert,
   Callout,
