@@ -1,0 +1,52 @@
+---
+title: Review an announcement
+description: Try a prepared workflow that drafts an announcement, asks for your review, and saves the revised text.
+---
+
+This example produces an announcement file and a record of its reviews. It does not post the announcement to a website or send it to customers.
+
+Before starting, [connect to the engine](/docs/getting-started). Ask your teammate which profile to use. Choose `local` only if they have prepared it for these examples.
+
+## Start the example
+
+1. Open **Pipelines**.
+2. Select **From brief to reviewed publication**.
+3. Choose **Run**.
+4. Select the profile your teammate supplied under **Engine profile**.
+5. Choose **Start run**.
+
+If the example is missing, choose **New pipeline**, then **Ready to run**, then **From brief to reviewed publication**.
+
+Keep the supplied brief for this first run. It describes a sample help-center announcement. AI writes a draft, then a separate AI review compares its claims with the brief.
+
+## Review the request
+
+1. Open **Inbox**.
+2. Choose the **Engine** tab.
+3. Open the request for this run.
+4. Expand **Inputs**.
+5. Read the original brief, draft, and editorial review.
+
+Check the facts and the wording before approving. Your approval allows a final revision and file export; the writer will apply the editorial review and your feedback.
+
+## Send your response
+
+The current app asks for a short text response in **Response output ports**.
+
+1. Paste `{"approved":true,"feedback":""}` into that box to approve without extra feedback.
+2. Choose **Submit response**.
+
+To request a wording change, replace the response with `{"approved":true,"feedback":"Use two short paragraphs."}` before submitting. Keep the punctuation and quotation marks.
+
+If you do not approve, leave the request open. To stop the run, open it in **Runs** and choose **Request cancellation**. This example does not accept a false approval response.
+
+## Get the finished files
+
+1. Open the run in **Runs**.
+2. Wait for it to complete.
+3. Open **Artifacts**.
+4. Choose the **Engine** tab.
+5. Select `publication.md`.
+6. Choose **Export**.
+
+The file contains the revised announcement. Read it before using it. The second file, `review-history.json`, records the brief, first draft, AI review, your response, and final text.

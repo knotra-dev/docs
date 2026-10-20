@@ -1,0 +1,66 @@
+---
+title: Technical setup
+description: Developer instructions for preparing Knotra and editing this documentation site.
+---
+
+This page is for the person installing or developing Knotra. To explore an already prepared app, start with [First steps](/docs/getting-started).
+
+## Prepare the development workspace
+
+Install Git, Make, Python 3, Go from the engine's `go.mod`, Bun 1.3.10, Node.js 24, pnpm 11.25.0, Rust/rustup, and the [Tauri platform prerequisites](https://v2.tauri.app/start/prerequisites/). Docker with Compose is required for PostgreSQL and sandbox execution.
+
+The workspace commands target macOS/Linux. Use WSL for the engine on Windows and the platform's native toolchain for desktop.
+
+```sh
+git clone https://github.com/knotra-dev/dev.git knotra-dev
+cd knotra-dev
+make bootstrap
+make infra
+make dev
+```
+
+Bootstrap installs dependencies and clones the revisions in `repos.lock.json`. It preserves existing checkouts and edits. Infrastructure setup prepares PostgreSQL and sandbox dependencies.
+
+The bundled `local` profile expects Ollama at `http://127.0.0.1:11434` with `qwen3.5:9b` installed. Install and pull the model separately; workspace setup does not download model weights or make paid calls.
+
+In desktop Settings, save `http://127.0.0.1:8787` and connect. Give this address and the prepared profile name to the person using the app. Keep the engine running while they work. `make dev` stops the engine when desktop exits.
+
+## Run parts separately
+
+From the workspace root, run `make engine` and `make desktop` in separate terminals. For browser preview, use `make browser` instead of `make desktop` and open `http://127.0.0.1:1420`.
+
+Native and browser development share port `1420`. The workspace engine command enables the browser's exact origin.
+
+PostgreSQL uses port `25432`; stop an older stack if it occupies that port. `make stop` preserves its volume. Engine files live in `.state/engine`. Use `KNOTRA_DATABASE_URL` for an existing development database.
+
+For standalone quickstart, provider credentials, remote access, and backups, follow the engine's [running guide](https://github.com/knotra-dev/engine/blob/main/docs/running.md). Follow [architecture](https://github.com/knotra-dev/engine/blob/main/docs/architecture.md) and [notation](https://github.com/knotra-dev/engine/blob/main/docs/notation.md) when changing execution behavior.
+
+## Edit this site
+
+From a checkout of [the docs repository](https://github.com/knotra-dev/docs), using Node.js 24 and pnpm 11.25.0:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+Edit pages in `apps/content/docs/en/`. Each `.mdx` file starts with `title` and `description` frontmatter. Update navigation in `apps/web/src/config/docs.ts` when adding or renaming a page. Internal links use paths such as `/docs/getting-started`.
+
+Check the site before submitting:
+
+```sh
+pnpm lint
+pnpm build
+pnpm typecheck
+pnpm test
+```
+
+From the development workspace, `make docs` starts the site and `make docs-check` runs these checks.
+
+## Change the products
+
+Run `make build` and `make check` in engine. Follow [engine contribution instructions](https://github.com/knotra-dev/engine/blob/main/CONTRIBUTING.md) and [desktop checks](https://github.com/knotra-dev/desktop/blob/main/README.md#checks-and-build) for the work you change.
+
+For a shared contract change, commit engine first. Sync its canonical assets into desktop using the [desktop contribution instructions](https://github.com/knotra-dev/desktop/blob/main/CONTRIBUTING.md). Commit and push the changed repositories before recording their revisions with `make lock` in the workspace.
+
+Default checks need no paid model calls. The workspace's `make integration` uses real PostgreSQL, Docker, and browser/native clients with a fixed model provider. Follow the [workspace README](https://github.com/knotra-dev/dev) for its prerequisites.

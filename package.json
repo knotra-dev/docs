@@ -1,0 +1,16 @@
+{
+  "name": "knotra-docs",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter knotra-docs-web dev",
+    "build": "pnpm --filter knotra-docs-web build",
+    "lint": "pnpm --filter knotra-docs-web lint",
+    "typecheck": "pnpm --filter knotra-docs-web typecheck",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {},
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24 <25"
+  }
+}
