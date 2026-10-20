@@ -3,7 +3,21 @@ title: Technical setup
 description: Developer instructions for preparing Knotra and editing this documentation site.
 ---
 
-This page is for the person installing or developing Knotra. To explore an already prepared app, start with [First steps](/docs/getting-started).
+Use prebuilt Docker images to run Knotra; the [Command line guide](/docs/cli) covers installation and your first workflow without a compiler. This page covers building Knotra and editing its documentation. To explore an already prepared app, start with [First steps](/docs/getting-started).
+
+## Run without building
+
+Install Docker with Compose and start Ollama. The Compose setup uses host networking: Linux Docker Engine supports it; in Docker Desktop 4.34+, enable **Settings → Resources → Network → Enable host networking**. See [Docker's requirements](https://docs.docker.com/engine/network/drivers/host/).
+
+```sh
+mkdir knotra && cd knotra
+curl -fsSLO https://raw.githubusercontent.com/knotra-dev/engine/main/compose.container.yaml
+docker compose -f compose.container.yaml --profile tools pull
+ollama pull qwen3.5:9b
+docker compose -f compose.container.yaml up -d --wait
+```
+
+Connect desktop to `http://127.0.0.1:8787`, or follow the [CLI guide](/docs/cli) to use the CLI from the same image. Engine data persists in `.knotra-container`; PostgreSQL uses a Docker volume. Stop with `docker compose -f compose.container.yaml down` to keep both. The engine controls the host Docker socket, so run it as a trusted operator. Use the [deployment guide](https://github.com/knotra-dev/engine/wiki/Deployment) for pinned versions, remote access, cloud models, and backups.
 
 ## Prepare the development workspace
 

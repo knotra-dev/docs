@@ -5,33 +5,41 @@ description: Create a pipeline, run it on an engine, follow its progress, and do
 
 Use the CLI to work with Knotra from a terminal or a script. You create a **pipeline** (the plan), start a **run** (one execution), and collect **artifacts** (result files). Work executes on the engine; the CLI connects to it over HTTP/SSE.
 
-The usual path is **init → validate → run → status → artifacts**. Creating and validating a pipeline offline needs no engine, Docker, database, or model.
+The usual path is **init → validate → run → status → artifacts**. Use the prebuilt Docker image below; no Go, Make, or source checkout is needed. Creating and validating a pipeline offline needs no running engine or model.
 
 [Main commands](#main-commands) · [Inputs](#pass-input-values) · [Results](#follow-progress-and-save-results) · [Scripts](#use-the-cli-in-scripts)
 
 ## Get the CLI
 
-These commands describe the current `main` interface. Older [release archives](https://github.com/knotra-dev/engine/releases) may use the previous commands. To build the current CLI, install Git, Make, and the Go version in the engine's `go.mod`, then run:
+Install Docker with Compose. The local setup uses host networking: use Linux Docker Engine, or Docker Desktop 4.34+ with **Settings → Resources → Network → Enable host networking** enabled. See [Docker's platform requirements](https://docs.docker.com/engine/network/drivers/host/). On Windows, use a WSL shell with Linux containers for the commands below.
+
+Download the Compose file into a new working directory and pull the engine, database, and sandbox images:
 
 ```sh
-git clone --branch main https://github.com/knotra-dev/engine.git knotra-engine
-cd knotra-engine
-make build
-export PATH="$PWD/bin:$PATH"
-knotra --version
+mkdir knotra && cd knotra
+curl -fsSLO https://raw.githubusercontent.com/knotra-dev/engine/main/compose.container.yaml
+docker compose -f compose.container.yaml --profile tools pull
+docker run --rm ghcr.io/knotra-dev/engine:latest --version
 ```
 
-The binary is `bin/knotra`. The `PATH` setting above lasts for this shell; add that directory to your shell configuration to keep it. Examples use a macOS/Linux shell; use WSL for this source-build path on Windows.
+The engine image includes the CLI, Linux sandbox helper, and Docker CLI. Images support Linux `amd64` and `arm64`. Use `docker run --rm ghcr.io/knotra-dev/engine:latest --help` to inspect commands without starting an engine. The container setup uses the downloaded Compose file; `quickstart` requires the Compose plugin and is intended for the native CLI.
+
+Prefer a native binary? Unpack a [CLI release archive](https://github.com/knotra-dev/engine/releases), keeping both helpers beside the executable, and put `knotra` on your `PATH`. Native `init` and offline `validate` need no Docker. Older releases may use the previous command names. Building from source is covered in [Technical setup](/docs/contributing).
 
 ## Create your first pipeline
 
 ```sh
-knotra init my-workflow
-cd my-workflow
+docker compose -f compose.container.yaml run --rm --user "$(id -u):$(id -g)" cli init my-workflow
+knotra() {
+  docker compose -f compose.container.yaml run --rm -T \
+    --user "$(id -u):$(id -g)" -w /workspace/my-workflow cli "$@"
+}
 knotra validate
 ```
 
-`init` creates an editable `pipeline.yaml` and refuses to overwrite an existing one. The starter asks a model for a greeting and saves `greeting.txt`. Open the file to change the workflow. Both `validate` and `run` use `pipeline.yaml` in the current directory unless you supply a path.
+Stay in the directory with `compose.container.yaml`. The `knotra` shell function runs the remaining examples inside `my-workflow`, mounted at `/workspace/my-workflow`; it lasts for this terminal session. The CLI runs as your user, so pipeline files and downloads remain yours. Receipts and event cursors persist in `.knotra-cli` beside the Compose file. With a native CLI, use `knotra init my-workflow` and `cd my-workflow` instead of the container command and function.
+
+`init` creates `my-workflow/pipeline.yaml` and refuses to overwrite an existing file. The starter asks a model for a greeting and saves `greeting.txt`. Open the pipeline file to change the workflow. Both `validate` and `run` use `pipeline.yaml` in the CLI's working directory unless you supply a path. Save input files in `my-workflow` too; downloaded artifacts appear there.
 
 Offline validation checks the package and supplied input values. It does not confirm engine resource access or artifact permissions; use remote validation after connecting.
 
@@ -50,23 +58,23 @@ Use `local` only when that profile exists on your engine. Remote engines require
 
 ### Start a local engine
 
-For a local quickstart, start Docker with Compose and Ollama first. In a **separate terminal, from the engine checkout**, build the sandbox helper and start the engine:
+Start Ollama on your host and download the default model once. From the directory with `compose.container.yaml`, start the engine and PostgreSQL:
 
 ```sh
-make helper
-bin/knotra doctor
-bin/knotra quickstart --dir "$PWD/.knotra/quickstart" --no-run
+ollama pull qwen3.5:9b
+docker compose -f compose.container.yaml up -d --wait
+knotra info
 ```
 
-`doctor` checks prerequisites without starting services. `quickstart` prepares persistent PostgreSQL, sandbox images, a `local` profile, and the default Ollama model `qwen3.5:9b`, downloading it if needed. `--no-run` skips the automatic greeting so you can submit your own pipeline below.
+The engine listens at `http://127.0.0.1:8787` with a prepared `local` profile. Ollama runs separately at `http://127.0.0.1:11434`; the engine does not compile or download the model. Engine files persist in `.knotra-container` and PostgreSQL data in a Docker volume.
 
-Leave that terminal running. Quickstart serves the engine in the foreground; Ctrl-C stops the engine, while its Compose services and volumes remain. Restart with the same directory and settings to retain the saved work.
+The engine runs in the background. `docker compose -f compose.container.yaml logs -f engine` shows server logs. Stop with `docker compose -f compose.container.yaml down`; start again from the same directory to reuse the data. Adding `--volumes` to `down` deletes the database. The engine controls the local Docker socket and needs a trusted operator; workflow code still runs in its separate sandboxes.
 
-For the full development workspace, use [Technical setup](/docs/contributing). For cloud model credentials, manual `serve` configuration, remote access, and backups, follow [engine deployment](https://github.com/knotra-dev/engine/wiki/Deployment). A manually started engine needs PostgreSQL and a trusted profile file; installing the CLI alone does not prepare them.
+For a native CLI, `knotra doctor` checks prerequisites and `knotra quickstart --dir "$PWD/knotra-data" --no-run` starts persistent local infrastructure and serves until Ctrl-C. For the full development workspace, use [Technical setup](/docs/contributing). For image versions, cloud model credentials, manual `serve` configuration, remote access, and backups, follow [engine deployment](https://github.com/knotra-dev/engine/wiki/Deployment).
 
 ## Validate and run
 
-Back in `my-workflow`, with the engine running:
+With the engine running, use the `knotra` function defined above (or your native CLI from `my-workflow`):
 
 ```sh
 knotra validate --remote --profile local
