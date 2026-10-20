@@ -8,12 +8,12 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/docs'
 const origin = 'https://knotra-dev.github.io'
 
 test('exports every guide and a static site entry', () => {
-  for (const slug of ['', 'getting-started', 'engine', 'desktop', 'guides/first-workflow', 'contributing', 'troubleshooting']) {
+  for (const slug of ['', 'getting-started', 'engine', 'desktop', 'cli', 'guides/first-workflow', 'contributing', 'troubleshooting']) {
     const html = readFileSync(new URL(`en/docs/${slug ? `${slug}/` : ''}index.html`, output), 'utf8')
     assert.match(html, /<h1[ >]/, `Missing heading for ${slug || 'introduction'}`)
     assert.doesNotMatch(html, /Document not found/)
-    if (slug !== 'contributing') {
-      assert.doesNotMatch(html, /<pre[ >]/, 'Keep developer commands in Technical setup')
+    if (!['contributing', 'cli'].includes(slug)) {
+      assert.doesNotMatch(html, /<pre[ >]/, 'Keep terminal commands in Technical setup and the CLI guide')
     }
   }
   const entry = readFileSync(new URL('index.html', output), 'utf8')

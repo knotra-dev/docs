@@ -29,6 +29,11 @@ export const docsConfig: DocsConfig = {
           items: [],
         },
         {
+          href: '/docs/cli',
+          title: { en: 'Command line (CLI)' },
+          items: [],
+        },
+        {
           href: '/docs/troubleshooting',
           title: { en: 'Common questions' },
           items: [],
