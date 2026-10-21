@@ -4,12 +4,16 @@ description: See how your workspace, the service doing the work, and your review
 toc: false
 ---
 
-Desktop is your workspace. The engine is the service doing the work. Your team prepares the connection; you follow progress and respond when a step needs your judgment.
+Desktop is your workspace. The engine is the service doing the work. Save your own model sources and MCP servers in Settings, or connect to an engine your team prepares. Choose each block's connections, follow progress, and respond when a step needs your judgment.
 
 <HowItWorks />
 
 **Workflow:** the saved plan. **Run:** one attempt to follow it. **Artifact:** a result file you keep.
 
-Closing desktop does not cancel work on the engine. Reconnect to check its progress.
+Runs need their engine to stay running. Closing Desktop does not cancel work on a separately running engine; reconnect to check its progress. The managed local engine starts again when you reopen Knotra after setup, and its saved progress remains available.
+
+Model sources and MCP servers saved in Desktop apply to its managed local engine. Changes wait until every unfinished run completes, including paused runs, human waits, and scheduled retries. Existing runs keep the configuration and credentials admitted with them. Local settings do not replace a manually selected existing engine.
+
+The **MCP servers** setting lets pipeline blocks call external tools. **Control Knotra with MCP** lets an assistant edit your workspace and manage sources through the open app. [Connect external tools](/docs/guides/mcp-tools) or [connect an assistant](/docs/guides/control-knotra) depending on your task.
 
 [Find your way around](/docs/desktop) · [Technical setup](/docs/contributing)

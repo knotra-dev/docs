@@ -9,7 +9,8 @@ const areas = [
     id: 'pipelines',
     label: 'Choose work',
     title: 'Pipelines',
-    instruction: 'Choose a saved workflow or start from a prepared example.',
+    instruction:
+      'Create a pipeline, continue the interactive lesson, or choose an optional template.',
   },
   {
     id: 'runs',
@@ -74,7 +75,7 @@ export function WorkspaceTour() {
                 />
               </a>
               <figcaption className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
-                <span>Real app · sample workspace</span>
+                <span>Earlier app version · sample workspace</span>
                 <a
                   className="underline underline-offset-4"
                   href={src}

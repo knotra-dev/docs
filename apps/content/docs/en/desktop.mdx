@@ -1,11 +1,33 @@
 ---
 title: Find your way around
-description: Explore where to start work, check progress, review a request, and find a file.
+description: Build pipelines, choose connections per block, follow runs, and answer human requests.
 toc: false
 ---
 
 Choose an area below to see what it is for. Start work in **Pipelines**, follow it in **Runs**, respond in **Inbox**, and collect files in **Artifacts**.
 
+## Build and configure
+
+A new workspace starts empty. Use the interactive tour for one learning pipeline, or choose **New pipeline** to build your own or pick an optional template. **Settings → Learn to use Knotra → Restart tour** opens the lesson again and keeps your edits.
+
+In a pipeline, the header shows its local save state and provides **Save** and **Run**. **Canvas**, **Code**, and **Files** switch views of the same pipeline package. Select a block on the canvas to edit its instructions, inputs, outputs, and connections. Use **Workflow** for pipeline-wide inputs and outputs.
+
+Choose models, code environments, and tools in each block. **Resources** shows which blocks use each connection and offers **Set up** actions. Internal names such as `writer` are created for you. [Choose block connections](/docs/guides/block-connections) explains the selectors and agent permissions.
+
+**Settings** keeps model providers, external MCP servers, local engine controls, existing-engine connection, assistant MCP control, appearance, backups, and the tour in separate sections. Start the local engine there after saving a source. Once configured and selected, it starts automatically on later app launches.
+
+## Follow and review
+
+Open a run to see **Pipeline activity**: readable step names, status changes, model and tool activity, and retry attempts. **Technical details** contains execution IDs when you need them. **Replay** explores saved execution history.
+
+When a run waits for you, open its request in **Inbox**. Read **What to do** and **From previous steps**, complete the fields under **Your answer**, then choose **Submit response**. The form follows that request's schema. Complex custom schemas can use **Advanced JSON**.
+
+Finished files are available in **Artifacts**. Saved sources and pipeline choices persist across restarts; credentials are excluded from workspace backups. Source changes wait until unfinished runs complete before the local engine refreshes its configuration.
+
+## Explore the areas
+
+These screenshots show an earlier sample workspace. Current controls follow the instructions above; new installations have an empty workspace and an optional interactive tour.
+
 <WorkspaceTour />
 
-[Try a reviewed announcement](/docs/guides/first-workflow)
+[Try a reviewed announcement](/docs/guides/first-workflow) · [Add external MCP tools](/docs/guides/mcp-tools) · [Control Knotra with MCP](/docs/guides/control-knotra)

@@ -8,12 +8,12 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/docs'
 const origin = 'https://knotra-dev.github.io'
 
 test('exports every guide and a static site entry', () => {
-  for (const slug of ['', 'getting-started', 'engine', 'desktop', 'cli', 'guides/first-workflow', 'contributing', 'troubleshooting']) {
+  for (const slug of ['', 'getting-started', 'engine', 'desktop', 'cli', 'guides/connect-models', 'guides/block-connections', 'guides/mcp-tools', 'guides/control-knotra', 'guides/first-workflow', 'contributing', 'troubleshooting']) {
     const html = readFileSync(new URL(`en/docs/${slug ? `${slug}/` : ''}index.html`, output), 'utf8')
     assert.match(html, /<h1[ >]/, `Missing heading for ${slug || 'introduction'}`)
     assert.doesNotMatch(html, /Document not found/)
-    if (!['contributing', 'cli'].includes(slug)) {
-      assert.doesNotMatch(html, /<pre[ >]/, 'Keep terminal commands in Technical setup and the CLI guide')
+    if (!['contributing', 'cli', 'guides/connect-models'].includes(slug)) {
+      assert.doesNotMatch(html, /<pre[ >]/, 'Keep terminal commands in setup and CLI guides')
     }
   }
   const entry = readFileSync(new URL('index.html', output), 'utf8')
@@ -22,7 +22,7 @@ test('exports every guide and a static site entry', () => {
 
 test('all exported links and assets resolve beneath the deployment path', () => {
   const pages = readdirSync(output, { recursive: true }).filter(name => name.endsWith('.html'))
-  assert.ok(pages.length >= 9)
+  assert.ok(pages.length >= 12)
   for (const page of pages) {
     const html = readFileSync(new URL(page, output), 'utf8')
     const current = new URL(`${basePath}/${page.replace(/index\.html$/, '')}`, origin)

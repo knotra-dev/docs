@@ -70,7 +70,7 @@ The engine listens at `http://127.0.0.1:8787` with a prepared `local` profile. O
 
 The engine runs in the background. `docker compose -f compose.container.yaml logs -f engine` shows server logs. Stop with `docker compose -f compose.container.yaml down`; start again from the same directory to reuse the data. Adding `--volumes` to `down` deletes the database. The engine controls the local Docker socket and needs a trusted operator; workflow code still runs in its separate sandboxes.
 
-For a native CLI, `knotra doctor` checks prerequisites and `knotra quickstart --dir "$PWD/knotra-data" --no-run` starts persistent local infrastructure and serves until Ctrl-C. For the full development workspace, use [Technical setup](/docs/contributing). For image versions, cloud model credentials, manual `serve` configuration, remote access, and backups, follow [engine deployment](https://github.com/knotra-dev/engine/wiki/Deployment).
+For a native CLI, `knotra doctor` checks prerequisites and `knotra quickstart --dir "$PWD/knotra-data" --no-run` starts persistent local infrastructure and serves until Ctrl-C. To use Codex or Claude Code with your account login, follow [Connect models and agents](/docs/guides/connect-models). It also covers local Ollama, OpenAI-compatible model servers, and custom profiles. For the full development workspace, use [Technical setup](/docs/contributing). For image versions, manual `serve` configuration, remote access, and backups, follow [engine deployment](https://github.com/knotra-dev/engine/wiki/Deployment).
 
 ## Validate and run
 
@@ -248,3 +248,9 @@ knotra artifacts download --help
 ```
 
 The [full CLI reference](https://github.com/knotra-dev/engine/wiki/CLI) covers every flag, migration from older commands, resource management, and engine operation. For connection problems, start with [Troubleshooting](/docs/troubleshooting).
+
+## Connect an MCP assistant to Desktop
+
+The CLI also provides `knotra mcp serve --desktop` for Knotra's desktop control server. Use **Settings → Control Knotra with MCP → Copy configuration** to obtain the complete command and bridge-file arguments for your installation. Keep the app open. The assistant can edit visible pipelines, configure sources, and manage engine work through 29 tools; the [control guide](/docs/guides/control-knotra) covers revisions and retry behavior.
+
+`knotra mcp discover --json` is a separate tool-discovery command used by Desktop's [external MCP setup](/docs/guides/mcp-tools). It lists a server's tools without executing them. These two commands serve different purposes: one exposes control of the live app, and the other discovers external tools for pipeline blocks.

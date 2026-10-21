@@ -13,6 +13,11 @@ export const docsConfig: DocsConfig = {
           items: [],
         },
         {
+          href: '/docs/guides/connect-models',
+          title: { en: 'Connect models and agents' },
+          items: [],
+        },
+        {
           href: '/docs/guides/first-workflow',
           title: { en: 'Review an announcement' },
           items: [],
@@ -22,6 +27,21 @@ export const docsConfig: DocsConfig = {
     {
       title: { en: 'Everyday use' },
       items: [
+        {
+          href: '/docs/guides/block-connections',
+          title: { en: 'Choose block connections' },
+          items: [],
+        },
+        {
+          href: '/docs/guides/mcp-tools',
+          title: { en: 'Add an MCP server' },
+          items: [],
+        },
+        {
+          href: '/docs/guides/control-knotra',
+          title: { en: 'Control Knotra with MCP' },
+          items: [],
+        },
         { href: '/docs/engine', title: { en: 'How it works' }, items: [] },
         {
           href: '/docs/desktop',

@@ -1,17 +1,33 @@
 ---
 title: First steps
-description: Try the app with sample results before connecting it to real work.
+description: Learn to build, run, and review workflows with the interactive tour.
 toc: false
 ---
 
-Open Knotra Desktop and try the guided demo. It uses sample results without calling an AI model.
+Your first workspace is empty. The interactive tour offers **Create learning pipeline** to make **My first pipeline** with one model block. Edit its instructions, add a **Human review** block, and connect the model's `text` output to the review's `draft` input.
+
+You can build the lesson offline. Its optional connection step highlights **Settings → Model providers → Add source**. Select **Codex**, **Claude Code**, **OpenAI API**, **Anthropic API**, **OpenAI-compatible**, or **Ollama**. Give the source a name, then explicitly sign in or enter an API key when required. Choose **Load models**, then **Save source**. You can keep several API providers, accounts, or endpoints alongside Codex and Claude account sources. Saving a source does not start the engine. Choose **Skip model setup** to continue learning offline and return later.
+
+Next, select the `answer` model block and choose its **Source** and **Model** from the dropdowns. Each model or agent block keeps its own choice: changing one does not change other blocks, even if they previously shared an alias. Saved source catalogs are available while the engine is stopped. Choose **Use provider default** for the source’s default model. If a model is missing, open **Manage model sources** and **Refresh models** for that source. Names such as `writer` are internal links that Knotra creates; you do not need to declare them. [Choose block connections](/docs/guides/block-connections) when you add code or tools.
+
+For a real run, open **Settings → Local engine → Start local engine** after saving a source. Once configured and selected, the local engine starts automatically when you reopen Knotra. Sources, model catalogs, and node choices are kept; API keys stay in the operating system credential store and are not included in workspace backups. **Stop local engine** keeps the configuration and saved runs.
+
+Source changes appear in the saved catalog immediately. The local engine applies them automatically after all unfinished runs complete, including paused runs, human waits, and scheduled retries, then briefly refreshes while idle. Pending changes survive reopening Knotra; until they apply, the engine keeps its working configuration and the credentials needed by existing runs.
+
+When ready, choose **Run** to preview your inputs and engine profile, then explicitly choose **Start run**. In **Inbox**, open the human review, read **What to do** and **From previous steps**, then fill in **Your answer** or the approval fields. Choose **Submit response** to continue the pipeline. **Advanced JSON** is for complex custom response schemas. Advancing the tour never starts a run or calls a model.
+
+Choose **Skip tour** or **Finish tour** to dismiss it on this device. To return, open **Settings → Learn to use Knotra → Restart tour**. Replaying opens the same learning pipeline and preserves your edits.
+
+For other starting points, open **New pipeline** and choose an optional template from the library.
+
+To connect external tools, follow [Add an MCP server](/docs/guides/mcp-tools). To let an assistant build pipelines and manage sources in the live app, follow [Control Knotra with MCP](/docs/guides/control-knotra).
 
 <FirstSteps />
 
-## Ready for real work?
+## Connect to a shared engine
 
 Ask your teammate for the engine address, any access token, and a prepared profile. The engine does the work; the profile selects its AI and tool settings.
 
-In **Settings**, enter the address, choose **Save address**, then **Connect engine**. Use the supplied token if required. Wait for **Connected**.
+Open **Settings → Existing engine**, enter the address and supplied access token if required, then choose **Connect engine**. The address is saved only after a successful connection. Your engine choice survives reopening Knotra; the token is used only for this session and is excluded from backups. In the native app, **Use local engine** selects Knotra's managed engine again.
 
-Runs may use a paid model. The person preparing your connection can follow [Technical setup](/docs/contributing).
+Setting up your own engine? Follow [Connect models and agents](/docs/guides/connect-models) for Codex or Claude Code with your account login, local Ollama, or an OpenAI-compatible model server. It includes a small first test. Runs use your provider's available plan or model access.

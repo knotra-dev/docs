@@ -1,0 +1,324 @@
+---
+title: Connect models and agents
+description: Save multiple model sources and choose a source and model for each workflow block.
+---
+
+Use **Codex with your ChatGPT account** or **Claude Code with your Claude account**. Knotra runs the installed command-line tool using its saved sign-in. You do not need to create an API key for either account connection.
+
+Already using a teammate's engine? Ask for its address, engine access token if required, and profile name, then skip to [Connect Desktop](#connect-desktop). The person running the engine prepares its agent or model connections.
+
+## Choose your connection
+
+| You want to use… | Connection type | What you need on the engine computer |
+| --- | --- | --- |
+| Your Codex account access | Codex (ChatGPT account) | Codex CLI installed and signed in with ChatGPT. |
+| Your Claude Code account access | Claude Code (Claude account) | Claude Code CLI installed and signed in with your Claude subscription or eligible team account. |
+| Another hosted or local model server | OpenAI-compatible API | Its API base URL and exact model ID; a key only if that server requires one. |
+| A model running locally in Ollama | Ollama (local) | Ollama running with the model installed. |
+
+The account connections use your plan's normal model access and usage limits. OpenAI-compatible servers have their own access and billing arrangements.
+
+A **model connection** supplies the AI response. An **Agent step** can use that connection repeatedly while calling the tools your workflow allows. An **AI step** asks for one response. You can use the same connection for both.
+
+## Save sources in Desktop
+
+Native Desktop includes the local engine. Open **Settings → Model providers → Add source**. **Manage model sources** in a block or the Resources view opens the same settings.
+
+1. Select a provider button: **Codex**, **Claude Code**, **OpenAI API**, **Anthropic API**, **OpenAI-compatible**, or **Ollama**. This opens that provider’s setup form. **Change provider** returns to the choices.
+2. Give the connection a useful **Source name**, such as `Work API` or `Local Ollama`. For Codex or Claude Code, explicitly choose **Sign in** or **Use signed-in account**. Knotra does not sign you in automatically. For an API source, enter the key; it is saved in the operating system credential store. **OpenAI-compatible** also needs its **API base URL**; its key is optional if the server does not require one.
+3. Choose **Load models** to fetch the catalog, then **Save source**. If the provider cannot list models, enter its model ID once here when saving the source. That model becomes available in the source’s catalog for your blocks.
+4. Repeat **Add source** for other providers, API accounts, or endpoints. Sources from the same provider can have separate names and credentials. You can use them alongside Codex, Claude, and Ollama.
+
+Select a model or agent block in a pipeline, then choose its **Source** and **Model** from the dropdowns. The selection belongs to that block: changing it does not change other blocks that used the same alias. Saved catalogs are available with the engine stopped. If a model is missing, open **Manage model sources** and **Refresh models** for that source. **Use provider default** selects the source’s default model. Existing saved models remain selected even if the catalog no longer lists them. Model IDs are selected here; the fallback ID field in source setup is only for providers that cannot list a catalog.
+
+You do not need to create a name such as `writer`. Knotra creates these internal links when you choose a connection. **Workflow → Resources → Advanced resource bindings** exposes them for editing pipeline files; shared binding edits affect all blocks using that binding. See [Choose block connections](/docs/guides/block-connections) for code environments and agent permissions.
+
+Source names, endpoints, catalogs, and node choices survive app restarts. API keys are not included in workspace exports or backups. Existing native settings migrate without removing engine history. If an older installation kept an API key only for its current session, edit that source and save the key once.
+
+## Start the local engine
+
+Open **Settings → Local engine** and choose **Start local engine** after saving at least one model source or [MCP server](/docs/guides/mcp-tools). Keep Docker running for the engine database and workflow sandboxes. After the first setup, the selected local engine starts automatically when you reopen Knotra using the saved sources; this never initiates account sign-in. Explicitly stopping it keeps it stopped for the rest of that app session.
+
+**Stop local engine** keeps sources, credentials, and saved runs. Saving, editing, or removing a source updates the saved catalog immediately without interrupting existing runs. The running local engine applies the changes automatically after all unfinished runs complete, including paused runs, human waits, and scheduled retries, then briefly refreshes while idle. Pending changes survive reopening Knotra. Until they apply, the engine keeps its last working configuration and the credentials needed by existing runs. A manually selected existing engine stays selected; local source edits do not switch your connection.
+
+Use **Edit**, **Refresh models**, or **Remove** beside a source to manage it. Removing a source does not rewrite pipeline blocks that use it; select another source in those blocks before their next run.
+
+The terminal instructions below are for managing your own engine, including an engine on another computer.
+
+## Prepare a separate engine
+
+For Codex or Claude Code, run the **native Knotra engine under the same operating-system user who signs in to the CLI**. That lets it use the saved account login. A separate server, Docker container, Windows account, or WSL installation does not automatically share your desktop CLI or its sign-in.
+
+1. Install and start [Docker Desktop](https://www.docker.com/products/docker-desktop/), or Docker Engine with Compose on Linux. Use Linux containers. Quickstart uses Docker for its database and workflow sandboxes.
+2. Download the release archive for your operating system and processor from [Knotra engine releases](https://github.com/knotra-dev/engine/releases).
+3. Extract the whole archive into a folder you can keep. Leave the Linux sandbox helper files beside the `knotra` executable; Docker needs the helper matching its processor.
+4. Open a terminal in that extracted folder. On macOS/Linux, the examples use `./knotra`. On Windows, use `.\knotra.exe` instead. For the Linux release inside WSL, use the macOS/Linux commands and install/sign in to the agent CLI inside WSL too.
+
+Choose **one** connection below for your first setup. Quickstart prepares a persistent database, a `local` profile, and editable examples. The first start downloads sandbox images; keep Docker running.
+
+### Connect Codex with ChatGPT
+
+1. In your terminal, check whether Codex is installed:
+
+```sh
+codex --version
+```
+
+2. If the command is missing, follow the [official Codex CLI installation guide](https://learn.chatgpt.com/docs/codex/cli). Select your operating system, run its installer, then open a new terminal. Codex CLI `0.160.0` provides the required options; `doctor` checks your installed CLI's supported flags. Update an older installation if it reports an unsupported option.
+3. Sign in with **ChatGPT**, then check the active authentication method:
+
+```sh
+codex login
+codex login status
+```
+
+4. Complete the browser sign-in with the account and workspace you want Knotra to use. The status should identify a ChatGPT login. If it shows API-key authentication, sign out with `codex logout`, then run `codex login` and choose ChatGPT. Your workspace may require an admin to enable Codex access.
+5. Start Knotra from the extracted release folder:
+
+```sh
+./knotra doctor --provider codex
+./knotra quickstart --provider codex --dir ./knotra-codex --no-run
+```
+
+<details>
+<summary>Windows PowerShell commands</summary>
+
+```powershell
+codex login
+codex login status
+.\knotra.exe doctor --provider codex
+.\knotra.exe quickstart --provider codex --dir .\knotra-codex --no-run
+```
+
+</details>
+
+The commands above use the CLI's default model. Knotra ignores your personal Codex configuration file; add `--model MODEL_ID` to both commands to set the connection's default explicitly. In Desktop, select a model or agent block and choose its **Source** and **Model**. You do not need a model API key or API billing setup for this connection.
+
+If the browser sign-in cannot return to a remote terminal, `codex login --device-auth` offers device-code sign-in where your account permits it. Follow the [official Codex authentication instructions](https://learn.chatgpt.com/docs/auth).
+
+### Connect Claude Code with your Claude account
+
+1. In your terminal, check whether Claude Code is installed:
+
+```sh
+claude --version
+```
+
+2. If the command is missing, follow the [official Claude Code installation guide](https://code.claude.com/docs/en/quickstart). Choose your operating system, run its installer, then open a new terminal. Use Claude Code `2.1.248` or newer for the required [restricted-mode options](https://code.claude.com/docs/en/cli-reference). The Claude desktop chat app alone does not install the `claude` command.
+3. Sign in and check the account:
+
+```sh
+claude auth login
+claude auth status --text
+```
+
+4. Complete the browser sign-in with your **Claude account**, using a plan or team account with Claude Code access. Use the subscription sign-in, rather than the Console/API billing option. If you need to switch accounts, run `claude auth logout`, then `claude auth login` again.
+5. Start Knotra from the extracted release folder:
+
+```sh
+./knotra doctor --provider claude
+./knotra quickstart --provider claude --dir ./knotra-claude --no-run
+```
+
+<details>
+<summary>Windows PowerShell commands</summary>
+
+```powershell
+claude auth login
+claude auth status --text
+.\knotra.exe doctor --provider claude
+.\knotra.exe quickstart --provider claude --dir .\knotra-claude --no-run
+```
+
+</details>
+
+The commands above use Claude Code's default model. Add `--model MODEL_ID` to both commands to set the connection's default explicitly. In Desktop, select a model or agent block and choose its **Source** and **Model**. No `ANTHROPIC_API_KEY` is needed for this connection.
+
+If the browser cannot return to Claude Code, follow its displayed instructions to copy the login URL and paste the returned login code into the terminal. See [Claude Code authentication](https://code.claude.com/docs/en/authentication) for account and sign-in help.
+
+## Connect Desktop
+
+When quickstart prints **Ready for your pipelines**, leave that terminal open. Its engine address is normally `http://127.0.0.1:8787`.
+
+1. Open Knotra Desktop → **Settings → Existing engine**.
+2. Enter the engine address and access token if required. Local quickstart does not require a token. For a shared engine, use the token its owner supplies.
+3. Choose **Connect engine** and wait for **Connected**. Knotra saves the address only after a successful connection.
+4. Open **Resources** to inspect the connections used by your pipeline. Expand **Available engine connections** to inspect the engine's configured sources and environments. A separately configured quickstart engine may show `local / model_main`; `local` is the profile name and `model_main` is its model connection ID.
+5. Select a model or agent block in a pipeline, choose its **Source** (`local / model_main` for quickstart), then select its **Model** or **Use provider default**. Each block keeps its own selection. For saved sources, refresh a missing model catalog through **Manage model sources**. Existing saved choices are preserved. In the run dialog, choose the prepared **Engine profile** (`local` for quickstart). **Workflow → Resources → Advanced resource bindings** is available for direct alias edits.
+
+Your existing-engine choice survives reopening Knotra. Saved local-source changes do not replace that connection. In the native app, choose **Use local engine** to select Knotra's managed engine again.
+
+The **engine access token** lets Desktop reach the engine. It is used only for this session and is not included in workspace backups. Your **CLI account sign-in** lets Codex or Claude Code do the AI work. You do not paste the CLI's login credentials into Desktop or into a workflow.
+
+### Check your first real run
+
+The interactive tour explains the controls without starting a run. To check the real connection, use the small greeting example. **This uses your account's model access and counts toward its usage limits.** A compatible API provider may charge for its requests.
+
+Keep the engine terminal open. Open a second terminal in the extracted CLI folder:
+
+```sh
+./knotra validate ./knotra-codex/examples/hello/pipeline.yaml --remote --profile local
+./knotra run ./knotra-codex/examples/hello/pipeline.yaml --profile local --wait
+```
+
+For Claude Code, replace `knotra-codex` with `knotra-claude`. For other connections below, use the directory you passed to `--dir`. In PowerShell, replace `./knotra` with `.\knotra.exe`.
+
+A successful run ends with **Status: succeeded**, includes a greeting, and creates `greeting.txt` in its run artifacts. In Desktop, open **Runs**, select the run, then find the file in **Artifacts → Engine**. The [CLI guide](/docs/cli#follow-progress-and-save-results) explains downloading it from a terminal.
+
+For account connections, `doctor` checks required CLI options and sign-in status before checking Docker. It does not generate a response. The small real run verifies that the account can actually use the chosen model. An available connection does not guarantee remaining plan allowance or successful generation.
+
+### Use the connection in an agent
+
+Select a **Source** and **Model** for an **AI agent** block, then choose its **Code environment** and **Code permissions** if it needs files or commands. Enable individual **MCP tools** if it needs an [external MCP server](/docs/guides/mcp-tools). Knotra uses Codex or Claude Code for AI decisions and executes the selected tools through its permissions and run history.
+
+Knotra manages the workflow's tools. The account connector does not import your previous CLI conversations, personal hooks, plugins, or MCP configuration, and it restricts native CLI actions. Add the tools the workflow needs in Knotra. Connecting a model alone does not prepare web search or other external services. An agent may make several model requests during one step, so start with the greeting before trying a larger workflow.
+
+## Connect another model server
+
+Choose **OpenAI-compatible API** for another hosted provider or a local server that implements the Chat Completions API. Native Desktop can save several of these sources alongside Codex and Claude account sources. For a separate engine, add the connections to its profile.
+
+1. In the server or provider's documentation, find the **API base URL** and an exact **Model ID** available to you. The base commonly ends in `/v1`. Copy the API address, rather than the provider's website or chat page.
+2. Check that the server supports the text, streaming, and tool/function-calling behavior your workflow needs. “OpenAI-compatible” support varies between servers.
+3. If that provider requires a key, create one in its own dashboard and set `OPENAI_API_KEY` in the terminal that will run the engine:
+
+```sh
+export OPENAI_API_KEY='PASTE_YOUR_PROVIDER_KEY_HERE'
+```
+
+In PowerShell, use `$env:OPENAI_API_KEY = 'PASTE_YOUR_PROVIDER_KEY_HERE'`. **Set a required key before the first quickstart command:** quickstart uses its presence to prepare the saved authentication reference. If your local server needs no authentication, leave the variable unset in the engine's terminal. The variable name is a convention for this connection; the key comes from your chosen provider. For an existing setup, follow [changing saved authentication](#restart-or-change-the-connection).
+
+4. For manual engine startup, run the following, replacing `YOUR_API_BASE_URL` and `YOUR_MODEL_ID` with your server's values. For the bundled native engine, use [Save sources in Desktop](#save-sources-in-desktop) instead:
+
+```sh
+./knotra doctor --provider openai-compatible --base-url 'YOUR_API_BASE_URL' --model 'YOUR_MODEL_ID'
+./knotra quickstart --provider openai-compatible --base-url 'YOUR_API_BASE_URL' --model 'YOUR_MODEL_ID' --dir ./knotra-compatible --no-run
+```
+
+Use the base URL without appending `/chat/completions`; Knotra adds the request route. Model IDs may include a provider prefix such as `provider/model-name`; keep the whole value. The URL must be reachable **from the engine**. `127.0.0.1` means the computer or container making the request.
+
+Follow [Connect Desktop](#connect-desktop), then run the greeting using `knotra-compatible/examples/hello/pipeline.yaml`. Keep API keys in the engine environment, outside pipeline files, shared screenshots, and source control. Setting a key in a Desktop or CLI client terminal does not change an engine already running elsewhere.
+
+### Connect a local Ollama model
+
+1. [Install Ollama](https://ollama.com/download) on the engine computer and open it. On Linux, start `ollama serve` in a separate terminal if the server is not already running.
+2. Download the model used by Knotra's local examples and check that it appears in the installed list:
+
+```sh
+ollama pull qwen3.5:9b
+ollama list
+./knotra doctor --provider ollama --model qwen3.5:9b
+./knotra quickstart --provider ollama --model qwen3.5:9b --dir ./knotra-ollama --no-run
+```
+
+On Windows, replace `./knotra` with `.\knotra.exe`. The model download can be large and performance depends on your computer. To use another installed model, replace `qwen3.5:9b` in both Knotra commands with its exact name from `ollama list`. Agent steps need a model with tool support.
+
+The default Ollama address is `http://127.0.0.1:11434`. Use `--base-url URL` for another Ollama server. See [Ollama's quickstart](https://docs.ollama.com/quickstart) for installation help. Local Ollama does not need a cloud API key.
+
+## Restart or change the connection
+
+For the bundled native engine, use [Settings → Local engine](#start-the-local-engine). The following applies to an engine started from a terminal.
+
+Ctrl-C in the quickstart terminal stops the engine. Its database, files, and settings remain. Start it again from the same CLI folder with the same provider, model, base URL, and `--dir`. The account CLI normally keeps its own login; if it expires, sign in again under the same user and restart Knotra.
+
+For an API connection, set its key again when opening a new terminal; the examples set it only for that session. Quickstart writes an environment-variable **reference**, not the key itself, into `profile.json`. **Saved profile settings and edits are kept on restart:** exporting a key after a compatible connection was first created without authentication does not add authentication to that profile.
+
+To add authentication to an existing keyless compatible setup, stop the engine and edit `profile.json` inside its quickstart directory. Set `spec.secrets.model_key` to `{"env":"OPENAI_API_KEY"}` and `spec.models.model_main.auth` to `{"key":{"secretRef":"model_key"}}`, preserving the rest of the profile and its resources. Set `OPENAI_API_KEY` in the engine terminal, then restart with the original command. To remove authentication, remove that model's `auth` entry from the saved profile; keep other models, secrets, and resources intact. The [YAML profile examples](#configure-an-existing-engine) show the same fields in YAML.
+
+To try a different connection, stop the engine and use a new directory, such as `./knotra-claude`. The previous database still runs after Ctrl-C, so choose a free database port too, for example by adding `--postgres-port 25433` to the new quickstart command. Keep the old directory and database if you need its saved work. To run two engines simultaneously, choose different `--listen` values and connect Desktop to the intended address.
+
+## Configure an existing engine
+
+The engine owner can add connections under `EngineProfile.spec.models`, keeping the profile's existing sandboxes, limits, and other resources. These are sections to merge into a full profile, not complete profile files.
+
+For account connections, no key or secret entry is needed:
+
+```yaml
+spec:
+  models:
+    model_main:
+      provider: codex
+      model: default
+```
+
+Use `provider: claude` for Claude Code. Run the native engine as the user who signed in to that CLI. `model: default` uses the CLI's default model; replace it with a supported model ID to choose one explicitly. Restart the engine with its existing `serve --profile FILE` command after editing.
+
+For an OpenAI-compatible server, use the saved profile provider name `openai_compatible`:
+
+```yaml
+spec:
+  models:
+    model_main:
+      provider: openai_compatible
+      model: YOUR_MODEL_ID
+      baseUrl: YOUR_API_BASE_URL
+```
+
+For a server requiring a key, add `spec.secrets` and `auth` to that model entry:
+
+```yaml
+spec:
+  secrets:
+    model_key:
+      env: OPENAI_API_KEY
+  models:
+    model_main:
+      provider: openai_compatible
+      model: YOUR_MODEL_ID
+      baseUrl: YOUR_API_BASE_URL
+      auth:
+        key:
+          secretRef: model_key
+```
+
+Keep the API key in the engine's environment. For several executor machines, supply the connection's CLI login or API credentials on each executor that will do the work. Existing direct OpenAI Responses (`provider: openai`) and Anthropic Messages (`provider: anthropic`) API profiles remain separate options; see the [adapter reference](https://github.com/knotra-dev/engine/wiki/Reference-Adapters). Use `codex` or `claude` when you want account-login access instead.
+
+### Use a model profile with Docker Compose
+
+Use this for Ollama or compatible/API model servers. For your local Codex/Claude Code account, use the native setup above so the engine can reach the installed CLI and its saved sign-in.
+
+For the installation from the [CLI guide](/docs/cli#start-a-local-engine), work beside `compose.container.yaml`:
+
+1. Copy your existing profile to `engine-profile.yaml` beside Compose, or download the [bundled local profile](https://raw.githubusercontent.com/knotra-dev/engine/main/examples/local/profile.yaml) and save it with that filename. Replace its model section using the compatible-server example above; keep the rest. Confirm this file exists before starting Compose.
+2. If the server needs a key, set `OPENAI_API_KEY` in the terminal starting Compose.
+3. Save this override as `compose.models.yaml`:
+
+```yaml
+services:
+  engine:
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./engine-profile.yaml:/etc/knotra/profile.yaml:ro
+```
+
+4. Apply it:
+
+```sh
+docker compose -f compose.container.yaml -f compose.models.yaml up -d --wait
+```
+
+Use both `-f` files for future Compose start/stop commands. Compose must pass a required API key into the engine container; exporting it only on your host is insufficient. Reconnect Desktop, then repeat the small validation/run check with your existing hello pipeline.
+
+## Fix connection problems
+
+| What you see | What to check next |
+| --- | --- |
+| `codex` or `claude` is missing | Install that CLI on the engine computer, open a new terminal, and check its `--version`. It must be on the engine process's `PATH`. |
+| Not signed in or the wrong authentication method | Run `codex login status` or `claude auth status --text` as the engine user. Sign in with ChatGPT or your Claude subscription account. Account connectors do not fall back to API keys. |
+| CLI works in your terminal but Knotra cannot use it | Start the native engine as the same OS user with the same CLI installation/login. A service, Docker container, or separate WSL environment may use another user, `PATH`, or credential store. |
+| CLI reports an unknown option | Update Codex or Claude Code using its official installation instructions, then retry `doctor`. Knotra needs current non-interactive and account-status options. |
+| Subscription or account usage limit reached | Check the provider's account usage and model access. Wait for allowance to reset or follow that provider's plan options. Repeated retries do not add allowance. |
+| Compatible server returns HTTP 401 or 403 | Check the key's permissions, the engine's `OPENAI_API_KEY`, and the saved model's `auth` reference. If the setup was created without a key, follow [changing saved authentication](#restart-or-change-the-connection); exporting a key and restarting alone does not add it. |
+| Compatible server returns HTTP 404 | Check its API base URL and exact model ID. Use the base URL, without adding `/chat/completions`. |
+| Model fails structured output or tool calling | Choose a model/server supporting the workflow's requirements. Some compatible servers implement only part of the protocol. |
+| Saved local sources changed but the engine still uses old settings | Changes apply automatically after every unfinished run completes. Paused and waiting runs count as unfinished; finish them before the engine can refresh. Pending changes survive reopening Knotra. |
+| An older API source asks for its key after restart | Edit the source and save the key once. Older session-only keys could not be recovered after closing the app. |
+| Connection is available but the run fails | Read the run's error. Availability does not prove remaining allowance, provider reachability, or successful generation. |
+| Ollama cannot be reached | Open Ollama or run `ollama serve`; check the address from the engine computer and the exact model name in `ollama list`. |
+| Unknown connection or missing sandbox/MCP connection | Match the pipeline's resource IDs to the selected profile. The greeting uses `model_main` and `python_box`; other examples may need more resources. |
+| Different settings already use this directory | Reuse its original flags or choose a new `--dir` and free `--postgres-port`. Keep existing state if you need saved runs. |
+| Engine or database port is occupied | Stop the existing engine, or choose free `--listen` and `--postgres-port` values. Its database may still run after Ctrl-C. |
+
+When asking for help, share the displayed error, connection type, selected model, and whether the engine is native, in Docker, or on another machine. Keep account tokens, API keys, and engine tokens private.
+
+[First steps](/docs/getting-started) · [Use the CLI](/docs/cli) · [Engine deployment reference](https://github.com/knotra-dev/engine/wiki/Deployment)

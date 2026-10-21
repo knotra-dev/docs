@@ -1,0 +1,51 @@
+---
+title: Choose block connections
+description: Select models, code environments, and tools directly in each pipeline block.
+---
+
+Open a pipeline and select the block you want to configure. Choose its real connection from the inspector. You do not need to declare names such as `writer` or type a model ID into a block.
+
+| Block | What to choose | Where the choices come from |
+| --- | --- | --- |
+| Model | **Source** and **Model** | Model providers saved in Settings, or the connected engine's sources. |
+| AI agent | **Source**, **Model**, optional **Code environment**, **Code permissions**, and **MCP tools** | Saved sources and the selected engine's environments and allowed tools. |
+| Code | **Code environment** | Sandboxes configured on the connected engine. |
+| Tool | **MCP server**, tool, and arguments | MCP servers and explicitly enabled tools. |
+
+## Choose a model
+
+1. Open **Settings → Model providers → Add source** and [save a source](/docs/guides/connect-models#save-sources-in-desktop).
+2. Return to a **Model** or **AI agent** block.
+3. Choose its **Source**, then choose its **Model** from that source's catalog. **Use provider default** uses the source's configured default.
+
+For example, use a Codex source in a drafting block and an API source in a checking block. Each block keeps its own selection. Changing one block's connection does not change another block that previously shared its internal binding.
+
+Saved model catalogs remain available while the local engine is stopped. If a model is missing, use **Manage model sources → Refresh models** for its source. A saved selection that is no longer available stays visible so you can replace it deliberately.
+
+## Run code in an environment
+
+Start or connect the engine in Settings, then select a **Code** block and choose **Code environment**. The bundled environments are **Python sandbox** for Python and **Node.js sandbox** for JavaScript. These are isolated execution environments supplied by the engine.
+
+An **AI agent** can use the same environments. Select its environment, then enable only the **Code permissions** it needs:
+
+- **Read files** lets it inspect files in that environment.
+- **Write files** lets it create or change files there.
+- **Run commands** lets it execute commands there.
+
+For example, an agent summarizing existing files needs Read files; an agent writing a report also needs Write files. Connecting a model alone does not grant file or command access.
+
+The dropdown reflects environments configured on the selected engine. To add a custom image or environment, the engine owner must configure its profile; Desktop does not install arbitrary environments. Secret values are also supplied by engine configuration. Pipeline files hold secret references rather than their values.
+
+## Select external tools
+
+[Add an MCP server](/docs/guides/mcp-tools) in Settings and enable its tools. A **Tool** block calls one chosen tool with the supplied arguments. An **AI agent** can choose when to call the individual tools you check in its **MCP tools** list.
+
+The server's allowed tools and the agent's selected tools both apply. Newly discovered tools are not automatically enabled.
+
+## Review the pipeline's connections
+
+Open **Resources** while a pipeline is selected. Its Models, MCP tools, Sandboxes, and Secret references tabs show the connections used by its blocks. Sandboxes are the code environments. Use a block's **Set up** action to open the relevant controls. **Available engine connections** shows what the connected engine supplies; availability is checked again when a run starts.
+
+Names such as `writer` are internal links in the pipeline file. Knotra creates them when you choose connections. **Workflow → Resources → Advanced resource bindings** exposes these links for direct editing. Editing a shared binding there affects every block using it, so use the block selectors for ordinary changes.
+
+[Connect model sources](/docs/guides/connect-models) · [Add MCP tools](/docs/guides/mcp-tools) · [Start your first pipeline](/docs/getting-started)

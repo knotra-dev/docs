@@ -3,6 +3,12 @@
 [Guides](https://knotra-dev.github.io/docs/) for the [Knotra engine](https://github.com/knotra-dev/engine)
 and [desktop app](https://github.com/knotra-dev/desktop).
 
+Start with the [interactive tour](https://knotra-dev.github.io/docs/en/docs/getting-started/),
+[model sources](https://knotra-dev.github.io/docs/en/docs/guides/connect-models/),
+and [block connections](https://knotra-dev.github.io/docs/en/docs/guides/block-connections/).
+Separate guides cover [external MCP tools](https://knotra-dev.github.io/docs/en/docs/guides/mcp-tools/)
+and [controlling the open app with MCP](https://knotra-dev.github.io/docs/en/docs/guides/control-knotra/).
+
 ## Develop
 
 Install Bun 1.3.10, Node.js 24, and Make, then run:
@@ -43,6 +49,7 @@ Based on [OpenDocs](https://github.com/daltonmenezes/opendocs) commit
 `a4fc4d31a768a0f980314530ab1fafa13caf1fba`. Original OpenDocs and shadcn MIT
 notices are preserved in [LICENSE.md](LICENSE.md).
 
-Screenshots in `apps/web/public/images/` show the bundled sample workspace and
+Historical screenshots in `apps/web/public/images/` show the bundled sample workspace and
 completed guided demo from desktop commit `70d68bda859e6afb4a5c1d0b862954ee4e2e6802`,
-using prewritten sample data and no model calls. Refresh them when those screens change.
+using prewritten sample data and no model calls. The current app uses an interactive
+tour instead of the guided demo. Refresh screenshots before using them for current controls.

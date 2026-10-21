@@ -1,8 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-import { basePath } from '@/lib/utils'
-
 import {
   ArrowDownIcon,
   ArrowLeftIcon,
@@ -23,30 +20,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 const firstSteps = [
   {
     id: 'choose',
-    label: '1 Choose a demo',
-    image: 'choose-demo',
-    title: 'Choose Research brief',
-    path: ['Pipelines', 'New pipeline', 'Guided demo'],
+    label: '1 Create & edit',
+    title: 'Give the model a task',
+    path: ['Create learning pipeline', 'My first pipeline', 'Instructions'],
     instruction:
-      'Open Research brief, choose Run demo, then Start demo. Keep the sample topic for your first try.',
+      'A new workspace is empty. Start the tour to create one small learning pipeline with a model block. Change its Instructions to ask for an answer in your own style, then click outside the field to apply it. Replaying the tour reuses this pipeline and keeps your edits.',
   },
   {
     id: 'follow',
-    label: '2 Follow the work',
-    image: 'runs',
-    title: 'Watch the steps reach review',
-    path: ['Runs', 'Guided demo', 'Your run'],
+    label: '2 Add & connect',
+    title: 'Pass the answer into a human review',
+    path: ['Add node', 'Human review', 'answer.text → human.draft'],
     instruction:
-      'Completed steps turn green. The sample pauses at Review when it needs your answer.',
+      'Choose Add node, then Human review. The lesson prepares its draft input. Click the model’s text output and the review’s draft input, or drag between them, to pass the answer into the review and set their order.',
+  },
+  {
+    id: 'model',
+    label: '3 Choose a model',
+    title: 'Connect the block to your model',
+    path: ['Settings (optional)', 'answer block', 'Source', 'Model'],
+    instruction:
+      'In Settings → Model providers, choose Add source. Select Codex, Claude Code, OpenAI API, Anthropic API, OpenAI-compatible, or Ollama, then save a named source. This does not start the engine. Select the answer block, then choose its Source and Model. Each model or agent block keeps its own choice. Saved catalogs remain available offline. Use the provider default or refresh the source’s catalog through Manage model sources if needed. You can skip setup and continue the tour offline.',
   },
   {
     id: 'review',
-    label: '3 Review & collect',
-    image: 'inbox',
-    title: 'Your turn, then your file',
-    path: ['Inbox', 'Your feedback', 'Submit response'],
+    label: '4 Run & review',
+    title: 'Start a real run when you are ready',
+    path: ['Run', 'Inputs & engine profile', 'Start run', 'Inbox'],
     instruction:
-      'Read the sample draft and send your feedback. Once the demo finishes, find brief.md in Artifacts.',
+      'For a real run, start the local engine separately in Settings after saving a source. Once configured, it starts automatically when Knotra reopens. Choose Run to preview inputs and the engine profile, then Start run. In Inbox, read What to do and From previous steps, fill in Your answer or approval fields, then Submit response to continue. Advanced JSON is for complex schemas. The tour also works offline and never starts a run for you.',
   },
 ]
 
@@ -54,8 +56,8 @@ export function FirstSteps() {
   return (
     <Tabs className="not-prose my-8" defaultValue="choose">
       <TabsList
-        aria-label="Your first guided demo"
-        className="grid h-auto w-full grid-cols-1 gap-2 bg-muted p-2 sm:grid-cols-3"
+        aria-label="Your first workflow"
+        className="grid h-auto w-full grid-cols-1 gap-2 bg-muted p-2 sm:grid-cols-2 lg:grid-cols-4"
       >
         {firstSteps.map(step => (
           <TabsTrigger
@@ -67,42 +69,22 @@ export function FirstSteps() {
           </TabsTrigger>
         ))}
       </TabsList>
-      {firstSteps.map(step => {
-        const src = `${basePath}/images/${step.image}.jpg`
-        return (
-          <TabsContent className="mt-5 space-y-5" key={step.id} value={step.id}>
-            <h3 className="text-2xl font-semibold">{step.title}</h3>
-            <ol className="flex flex-wrap items-center gap-3 text-sm font-medium">
-              {step.path.map((label, index) => (
-                <li className="flex items-center gap-3" key={label}>
-                  {index > 0 && (
-                    <ArrowRightIcon aria-hidden="true" className="size-4" />
-                  )}
-                  <span>{label}</span>
-                </li>
-              ))}
-            </ol>
-            <a
-              aria-label={`Open full-size screenshot: ${step.title}`}
-              href={src}
-              rel="noreferrer"
-              target="_blank"
-            >
-              <Image
-                alt={step.title}
-                className="h-auto w-full rounded-lg border"
-                height={800}
-                src={src}
-                width={1200}
-              />
-            </a>
-            <p className="text-base leading-relaxed">{step.instruction}</p>
-            <p className="text-sm text-muted-foreground">
-              Real app · sample data · Select the picture to enlarge it.
-            </p>
-          </TabsContent>
-        )
-      })}
+      {firstSteps.map(step => (
+        <TabsContent className="mt-5 space-y-5" key={step.id} value={step.id}>
+          <h3 className="text-2xl font-semibold">{step.title}</h3>
+          <ol className="flex flex-wrap items-center gap-3 text-sm font-medium">
+            {step.path.map((label, index) => (
+              <li className="flex items-center gap-3" key={label}>
+                {index > 0 && (
+                  <ArrowRightIcon aria-hidden="true" className="size-4" />
+                )}
+                <span>{label}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="text-base leading-relaxed">{step.instruction}</p>
+        </TabsContent>
+      ))}
     </Tabs>
   )
 }
@@ -145,8 +127,9 @@ export function HowItWorks() {
             aria-hidden="true"
             className="mt-0.5 size-5 shrink-0"
           />
-          Results return to Desktop for you to inspect. This is how a live run
-          works; the guided demo uses sample data.
+          Results return to Desktop for you to inspect. The interactive tour
+          teaches you to build a small pipeline before you choose to start a
+          run.
         </figcaption>
       </figure>
 
@@ -202,7 +185,7 @@ const questions = [
   {
     question: 'Why does Knotra say it is not connected?',
     answer:
-      'Desktop has not reached an engine: open Settings, check the engine address, and connect. You can explore the guided demo without an engine connection.',
+      'Desktop has not reached an engine: open Settings, check the engine address, and connect. You can explore pipelines and the interactive tour without an engine connection.',
   },
   {
     question: 'Why is my run waiting?',
@@ -212,7 +195,7 @@ const questions = [
   {
     question: 'Why won’t my run start?',
     answer:
-      'Open the pipeline, fix any validation messages, and check the engine connection in Settings. Run demo is available only for the unchanged Research brief sample.',
+      'Open the pipeline, fix any validation messages, and check the engine connection in Settings. Select each model or agent block and check its Source and Model. The engine profile must supply the tools and other resources the workflow needs.',
   },
   {
     question: 'Where is my result?',
@@ -220,9 +203,29 @@ const questions = [
       'Open Runs, select the finished run, and check its outputs and Artifacts. A step that is still running or has failed may not have produced a file yet.',
   },
   {
+    question: 'Do I need to declare a model called writer?',
+    answer:
+      'Select a Model or AI agent block and choose Source and Model. Names such as writer are internal pipeline bindings that Knotra creates for you. Choose Code environment for Code blocks and grant file or command permissions separately for agents. Advanced resource bindings is for editing those internal links directly.',
+  },
+  {
+    question: 'How do I answer a human request?',
+    answer:
+      'Open its request in Inbox, read What to do and From previous steps, then complete Your answer and Submit response. Ordinary schemas have labeled fields; Advanced JSON is available for complex custom schemas. Follow the fields for this request rather than copying a response from another pipeline.',
+  },
+  {
+    question: 'Why are connection changes still waiting?',
+    answer:
+      'The local engine waits for every unfinished run before applying saved source or MCP changes. Paused runs, human waits, and scheduled retries count. Finish or cancel those runs; pending changes survive reopening Knotra and do not need a manual restart.',
+  },
+  {
+    question: 'Where do I add MCP?',
+    answer:
+      'For external tools, use Settings → MCP servers → Add server. Load its tools, enable the ones you need, and save. Select the server and tool in a Tool block, or check individual tools in an AI agent. To let an assistant control Knotra itself, use the separate Control Knotra with MCP section in Settings and copy its configuration.',
+  },
+  {
     question: 'What happens when I close the app?',
     answer:
-      'Live runs continue as long as their engine keeps running. Reopen Desktop and reconnect to inspect saved progress.',
+      'Sources, model catalogs, and block choices are saved. A configured local engine starts automatically when you reopen Knotra; account sign-in is never started automatically. Runs continue only while their engine is running, and saved progress remains available after reconnection.',
   },
 ]
 

@@ -12,11 +12,11 @@ export default async function IndexPage(props: {
   return (
     <div className="container mx-auto max-w-5xl py-10 sm:py-14">
       <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">
-        See how a piece of work gets done.
+        Build a workflow you can follow.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-        Start with a brief. Let AI draft. Review the result. Keep the finished
-        file.
+        Learn with the interactive tour. Choose a model or tool for each block,
+        run your pipeline, and review the result.
       </p>
       <WorkflowWalkthrough />
       <nav
@@ -30,7 +30,13 @@ export default async function IndexPage(props: {
           className={buttonVariants({ variant: 'outline' })}
           href="/docs/getting-started"
         >
-          Try the Desktop demo
+          Build your first pipeline
+        </Link>
+        <Link
+          className={buttonVariants({ variant: 'outline' })}
+          href="/docs/guides/control-knotra"
+        >
+          Connect an assistant with MCP
         </Link>
       </nav>
     </div>
