@@ -7,7 +7,7 @@ Create a pipeline, run it on an engine, and download the result from your termin
 
 `init` → `validate` → `run` → `status` → `artifacts`
 
-Use the prebuilt Docker image or a native release. Creating and validating a pipeline offline needs no engine or model.
+Use the prebuilt Docker image or build the CLI from source. Creating and validating a pipeline offline needs no engine or model.
 
 [Main commands](#main-commands) · [Inputs](#pass-input-values) · [Results](#follow-progress-and-save-results) · [Scripts](#use-the-cli-in-scripts)
 
@@ -25,11 +25,11 @@ docker run --rm ghcr.io/knotra-dev/engine:latest --version
 ```
 
 <details>
-<summary>Image contents or a native release instead</summary>
+<summary>Image contents or building from source</summary>
 
 The engine image includes the CLI, Linux sandbox helper, and Docker CLI. Images support Linux `amd64` and `arm64`. Use `docker run --rm ghcr.io/knotra-dev/engine:latest --help` to inspect commands without starting an engine. The container setup uses the downloaded Compose file; `quickstart` requires the Compose plugin and is intended for the native CLI.
 
-Prefer a native binary? Unpack a [CLI release archive](https://github.com/knotra-dev/engine/releases), keeping both helpers beside the executable, and put `knotra` on your `PATH`. Native `init` and offline `validate` need no Docker. Older releases may use the previous command names. Building from source is covered in [Technical setup](/docs/contributing).
+For a native binary, build the CLI from source using [Technical setup](/docs/contributing). Native `init` and offline `validate` need no Docker.
 
 </details>
 
