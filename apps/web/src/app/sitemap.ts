@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...locales.map(locale => ({ url: absoluteUrl(`/${locale}/`) })),
     ...allDocs.map(doc => {
       const [locale, ...slug] = doc.slugAsParams.split('/')
+
       return { url: absoluteUrl(`/${[locale, 'docs', ...slug].join('/')}/`) }
     }),
   ]

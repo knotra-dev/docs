@@ -40,6 +40,7 @@ export default function (props: VortexProps) {
   const yOff = 0.00125
   const zOff = 0.0005
   const backgroundColor = props.backgroundColor || '#000000'
+
   let tick = 0
   const noise3D = createNoise3D()
   let particleProps = new Float32Array(particlePropsLength)
@@ -52,14 +53,17 @@ export default function (props: VortexProps) {
   const randRange = (n: number): number => n - rand(2 * n)
   const fadeInOut = (t: number, m: number): number => {
     const hm = 0.5 * m
+
     return Math.abs(((t + hm) % m) - hm) / hm
   }
+
   const lerp = (n1: number, n2: number, speed: number): number =>
     (1 - speed) * n1 + speed * n2
 
   const setup = () => {
     const canvas = canvasRef.current
     const container = containerRef.current
+
     if (canvas && container) {
       const ctx = canvas.getContext('2d')
 
@@ -83,6 +87,7 @@ export default function (props: VortexProps) {
 
   const initParticle = (i: number) => {
     const canvas = canvasRef.current
+
     if (!canvas) return
 
     const x = rand(canvas.width)
@@ -121,6 +126,7 @@ export default function (props: VortexProps) {
 
   const updateParticle = (i: number, ctx: CanvasRenderingContext2D) => {
     const canvas = canvasRef.current
+
     if (!canvas) return
 
     const i2 = 1 + i
@@ -131,21 +137,29 @@ export default function (props: VortexProps) {
     const i7 = 6 + i
     const i8 = 7 + i
     const i9 = 8 + i
+
     const x = particleProps[i]
     const y = particleProps[i2]
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     const n = noise3D(x! * xOff, y! * yOff, tick * zOff) * noiseSteps * TAU
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     const vx = lerp(particleProps[i3]!, Math.cos(n), 0.5)
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     const vy = lerp(particleProps[i4]!, Math.sin(n), 0.5)
+
     let life = particleProps[i5]
     const ttl = particleProps[i6]
     const speed = particleProps[i7]
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     const x2 = x! + vx * speed!
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     const y2 = y! + vy * speed!
+
     const radius = particleProps[i8]
     const hue = particleProps[i9]
 
@@ -159,6 +173,7 @@ export default function (props: VortexProps) {
     particleProps[i2] = y2
     particleProps[i3] = vx
     particleProps[i4] = vy
+
     // biome-ignore lint/style/noNonNullAssertion: Values are guaranteed to exist in particle array
     particleProps[i5] = life!
 
@@ -240,6 +255,7 @@ export default function (props: VortexProps) {
     window.addEventListener('resize', () => {
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
+
       if (canvas && ctx) {
         resize(canvas, ctx)
       }

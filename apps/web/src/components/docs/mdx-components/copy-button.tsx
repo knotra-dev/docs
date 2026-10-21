@@ -34,9 +34,11 @@ export function CopyButton({
 
   useEffect(() => {
     if (!hasCopied) return
+
     const t = setTimeout(() => {
       setHasCopied(false)
     }, 2000)
+
     return () => clearTimeout(t)
   }, [hasCopied])
 
@@ -80,9 +82,11 @@ export function CopyNpmCommandButton({
 
   useEffect(() => {
     if (!hasCopied) return
+
     const t = setTimeout(() => {
       setHasCopied(false)
     }, 2000)
+
     return () => clearTimeout(t)
   }, [hasCopied])
 

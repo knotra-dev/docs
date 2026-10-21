@@ -12,6 +12,7 @@ export function formatDate(
   locale: Intl.LocalesArgument = 'en-US'
 ): string {
   const date = new Date(input)
+
   return date.toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',

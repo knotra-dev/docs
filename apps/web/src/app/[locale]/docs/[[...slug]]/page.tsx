@@ -73,6 +73,7 @@ export default async function DocPage(props: {
   params: Promise<DocPageProps['params']>
 }) {
   const params = await props.params
+
   setRequestLocale(params.locale || defaultLocale)
 
   const doc = await getDocFromParams({ params })

@@ -60,6 +60,7 @@ export async function highlightServerCode(
           ),
           'utf-8'
         )
+
         await highlighter.loadTheme(JSON.parse(editorTheme))
         loadedLocalThemes.add(theme)
       } catch {

@@ -7,6 +7,7 @@ export const a = ({
   ...props
 }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const classes = cn('font-medium underline underline-offset-4', className)
+
   return href?.startsWith('/') ? (
     <Link className={classes} href={href} {...props} />
   ) : (

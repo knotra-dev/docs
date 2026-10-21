@@ -9,7 +9,9 @@ export default async function IndexPage(props: {
   params: Promise<{ locale: LocaleOptions }>
 }) {
   const { locale } = await props.params
+
   setRequestLocale(locale)
+
   return (
     <div className="container mx-auto max-w-6xl py-10 sm:py-14">
       <div className="flex flex-wrap items-end justify-between gap-6">

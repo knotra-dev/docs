@@ -26,7 +26,12 @@ const docComputedFields: ComputedFields = {
 
   slugAsParams: {
     type: 'string',
-    resolve: (doc) => doc._raw.flattenedPath.replace(/\/index$/, '').split('/').slice(1).join('/'),
+    resolve: (doc) =>
+      doc._raw.flattenedPath
+        .replace(/\/index$/, '')
+        .split('/')
+        .slice(1)
+        .join('/'),
   },
 }
 
@@ -255,6 +260,7 @@ export default makeSource({
         visit(tree, (node) => {
           if (node?.type === 'element' && node?.tagName === 'pre') {
             const [codeEl] = node.children
+
             if (codeEl.tagName !== 'code') {
               return
             }

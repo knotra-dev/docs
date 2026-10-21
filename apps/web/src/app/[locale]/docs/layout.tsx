@@ -11,7 +11,9 @@ export default async function DocsLayout(props: {
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await props.params
+
   setRequestLocale(locale)
+
   const config = await getServerDocsConfig({ locale: locale as LocaleOptions })
 
   return (

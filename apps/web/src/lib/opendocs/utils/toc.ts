@@ -20,6 +20,7 @@ function flattenNode(node: any): string {
 
   visit(node, (node: any) => {
     if (!textTypes.includes(node.type)) return
+
     if (node.value) {
       p.push(node.value)
     }
@@ -53,6 +54,7 @@ function getItems(node: any, current: any): Items {
 
     return current
   }
+
   if (node.type === 'listItem') {
     const heading = getItems(node.children?.[0], {})
 

@@ -25,7 +25,9 @@ export function MermaidDiagram({
       try {
         const { default: mermaid } = await import('mermaid')
         await document.fonts.ready
+
         if (cancelled) return
+
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: 'strict',
@@ -41,6 +43,7 @@ export function MermaidDiagram({
             wrappingWidth: 160,
           },
         })
+
         const dark = resolvedTheme === 'dark'
         const config = {
           theme: 'base',
@@ -67,6 +70,7 @@ export function MermaidDiagram({
           id,
           `---\nconfig: ${JSON.stringify(config)}\n---\n${definition}`
         )
+
         if (!cancelled) setSvg(result.svg)
       } catch {
         if (!cancelled) setFailed(true)
@@ -74,6 +78,7 @@ export function MermaidDiagram({
     }
 
     void render()
+
     return () => {
       cancelled = true
     }

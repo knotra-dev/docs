@@ -20,7 +20,9 @@ export async function generateMetadata(props: {
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await props.params
+
   if (!hasLocale(locales, locale)) notFound()
+
   setRequestLocale(locale)
 
   return {
@@ -49,7 +51,9 @@ export default async function LocaleLayout(props: {
   children: React.ReactNode
 }) {
   const { locale } = await props.params
+
   if (!hasLocale(locales, locale)) notFound()
+
   setRequestLocale(locale)
 
   return (
