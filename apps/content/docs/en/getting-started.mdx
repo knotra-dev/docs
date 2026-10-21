@@ -1,33 +1,127 @@
 ---
 title: First steps
-description: Learn to build, run, and review workflows with the interactive tour.
+description: Make a greeting, read it, and reply. One small pipeline, from the first click to the result.
 toc: false
 ---
 
-Your first workspace is empty. The interactive tour offers **Create learning pipeline** to make **My first pipeline** with one model block. Edit its instructions, add a **Human review** block, and connect the model's `text` output to the review's `draft` input.
+You will build **My first pipeline** with just two blocks: **Answer** writes a greeting, then **Human** waits for your reply. A block is one step; a pipeline connects the steps.
 
-You can build the lesson offline. Its optional connection step highlights **Settings → Model providers → Add source**. Select **Codex**, **Claude Code**, **OpenAI API**, **Anthropic API**, **OpenAI-compatible**, or **Ollama**. Give the source a name, then explicitly sign in or enter an API key when required. Choose **Load models**, then **Save source**. You can keep several API providers, accounts, or endpoints alongside Codex and Claude account sources. Saving a source does not start the engine. Choose **Skip model setup** to continue learning offline and return later.
+Follow the numbered steps in order. Each picture shows this same example. Click a picture to enlarge it.
 
-Next, select the `answer` model block and choose its **Source** and **Model** from the dropdowns. Each model or agent block keeps its own choice: changing one does not change other blocks, even if they previously shared an alias. Saved source catalogs are available while the engine is stopped. Choose **Use provider default** for the source’s default model. If a model is missing, open **Manage model sources** and **Refresh models** for that source. Names such as `writer` are internal links that Knotra creates; you do not need to declare them. [Choose block connections](/docs/guides/block-connections) when you add code or tools.
+## 1. Create your first pipeline
 
-For a real run, open **Settings → Local engine → Start local engine** after saving a source. Once configured and selected, the local engine starts automatically when you reopen Knotra. Sources, model catalogs, and node choices are kept; API keys stay in the operating system credential store and are not included in workspace backups. **Stop local engine** keeps the configuration and saved runs.
+1. Open **Knotra Desktop**. The first launch shows an empty workspace and the tour.
+2. In **Build your first pipeline**, click **Create learning pipeline**.
+3. The editor opens **My first pipeline** with one **Answer** block on the canvas.
 
-Source changes appear in the saved catalog immediately. The local engine applies them automatically after all unfinished runs complete, including paused runs, human waits, and scheduled retries, then briefly refreshes while idle. Pending changes survive reopening Knotra; until they apply, the engine keeps its working configuration and the credentials needed by existing runs.
+Already closed the tour? Click **Settings** at the bottom left, then **Learn to use Knotra → Restart tour**. Keep the tour open while following steps 1–6; it prepares the example as you go.
 
-When ready, choose **Run** to preview your inputs and engine profile, then explicitly choose **Start run**. In **Inbox**, open the human review, read **What to do** and **From previous steps**, then fill in **Your answer** or the approval fields. Choose **Submit response** to continue the pipeline. **Advanced JSON** is for complex custom response schemas. Advancing the tour never starts a run or calls a model.
+<DocScreenshot src="/images/beginner-01-create.webp" alt="My first pipeline just created with a single Answer block in the editor" caption="After creation, My first pipeline contains one Answer block." />
 
-Choose **Skip tour** or **Finish tour** to dismiss it on this device. To return, open **Settings → Learn to use Knotra → Restart tour**. Replaying opens the same learning pipeline and preserves your edits.
+## 2. Tell Answer what to do
 
-For other starting points, open **New pipeline** and choose an optional template from the library.
+1. Click the **Answer** block. Its settings appear on the right.
+2. Find **Instructions** and replace the text with:
 
-To connect external tools, follow [Add an MCP server](/docs/guides/mcp-tools). To let an assistant build pipelines and manage sources in the live app, follow [Control Knotra with MCP](/docs/guides/control-knotra).
+**Write a friendly one-sentence greeting for someone learning Knotra. Return your greeting in the text output.**
 
-<FirstSteps />
+3. Click outside the text box to apply your edit.
+4. Click **Next** in the tour.
+
+<DocScreenshot src="/images/beginner-02-instructions.webp" width={340} height={454} alt="The Answer block's settings with the greeting instructions" caption="Instructions tell the model what to do." />
+
+## 3. Add a place for your reply
+
+1. Click **Choose review block** in the tour. This opens the **Add node** chooser.
+2. Click **Human review**.
+3. A second block, **Human**, appears beside **Answer**. The lesson prepares its **draft** input for you.
+
+A human review pauses the work so you can read the AI's answer and respond.
+
+<DocScreenshot src="/images/beginner-03-add-review.webp" width={860} height={598} alt="The Human review option in the Add node chooser" caption="Add a node → Human review." />
+
+## 4. Connect the two blocks
+
+1. On **Answer**, click the small circle beside its **text** output.
+2. On **Human**, click the circle beside its **draft** input.
+3. A line appears between them. This sends the greeting into your review.
+4. Click **Save**, then **Next** in the tour.
+
+<DocScreenshot src="/images/beginner-04-connect.webp" width={660} height={253} alt="The text output of Answer connected to the draft input of Human in My first pipeline" caption="Your complete pipeline: Answer → Human. The connecting line passes the greeting to you." />
+
+**You have built the pipeline.** Nothing has run yet. The next steps connect a model and run it.
+
+## 5. Connect a model
+
+You need one model provider ready to use. The screenshots use **Ollama**, already running with a model installed. If you need to prepare a provider, follow [Connect models and agents](/docs/guides/connect-models), then return here. **Load models** lists available models; it does not download them.
+
+1. In **Settings → Model providers**, choose your provider. If you already have saved sources, click **Add source** first.
+2. Enter **My model** as the **Source name**.
+3. For the pictured **Ollama** source, no key or address is needed here. Other providers may ask you to sign in or enter an API key.
+4. Click **Load models**, then **Save source**. **My model** should appear in the saved sources.
+
+<DocScreenshot src="/images/beginner-05-source.webp" width={1000} height={562} alt="Model provider settings with the simple lesson's source named My model" caption="A source is your connection to a model provider. Our example calls it My model." />
+
+## 6. Give Answer its model
+
+1. Click **Next** in the tour to return to the pipeline. Click **Answer** if it is not selected.
+2. In its settings, set **Source** to **My model**.
+3. In **Model**, choose **Use provider default**, or a model from the list.
+4. Click **Save**, then **Next** in the tour to reach **Run when you are ready**.
+
+<DocScreenshot src="/images/beginner-06-model.webp" width={340} height={717} alt="Answer settings with My model selected as Source and Use provider default selected as Model" caption="The Answer block now knows which model to use." />
+
+## 7. Start the engine
+
+The engine is the local service that runs your steps. Saving a model source does not start it.
+
+1. Start **Docker Desktop**, or your installed Docker service. [Install Docker](https://docs.docker.com/get-started/get-docker/) first if needed.
+2. In **My first pipeline**, click **Local engine** at the top right. Its Settings section opens.
+3. Click **Start local engine** and wait for **Running** and a connected engine.
+4. Click **My first pipeline** in the left sidebar to return to the editor.
+
+<DocScreenshot src="/images/beginner-07-engine.webp" width={1000} height={245} alt="Local engine settings with its running status" caption="Wait for the local engine to be running before starting your pipeline." />
+
+## 8. Run your pipeline
+
+1. Click **Run** at the top right of the editor. The **Run on engine** dialog opens.
+2. In **Workflow values (JSON)**, replace all the text with `{"question":"I am new to Knotra. Say hello!"}`.
+3. Keep the selected local **Engine profile**. The picture shows it as **Local profile**.
+4. Click **Start run**. Knotra checks the pipeline and starts the model.
+
+This calls your selected model. Ollama runs locally; account and API sources use your provider's allowance or credits. The screenshots use prewritten sample responses; your greeting will differ.
+
+<DocScreenshot src="/images/beginner-08-run.webp" width={610} height={580} alt="Run on engine dialog for My first pipeline with the greeting question and local engine profile" caption="Check your question and profile, then click Start run." />
+
+## 9. Read the greeting and reply
+
+1. Wait for the model to finish, then click **Inbox** in the left sidebar.
+2. Open the **Human review** request for **My first pipeline**.
+3. Read **What to do** and the greeting under **From previous steps → Draft**.
+4. In **Your answer**, type **Looks good — thank you!**
+5. Click **Submit response**. The request leaves the Inbox and the run can finish. If the tour is still open, click **Finish tour**.
+
+<DocScreenshot src="/images/beginner-09-reply.webp" height={1000} alt="Inbox request from My first pipeline with its greeting and a simple Your answer reply field" caption="Read the greeting, write your reply, then submit it." />
+
+## 10. See the finished result
+
+1. Click **Runs** in the sidebar and open **My first pipeline**.
+2. Wait for **Completed**. Both **Answer** and **Human** should have finished.
+3. Open **Outputs** to read the greeting under **values → answer**.
+
+The greeting appears as text under **Outputs**. Your reply is saved separately with the **Human** step.
+
+<DocScreenshot src="/images/beginner-10-result.webp" width={1218} height={410} alt="Completed My first pipeline run showing its greeting in Outputs" caption="Done: one AI answer, one human reply, and a saved run you can inspect again." />
+
+To try again, open the pipeline, change its instructions or question, and start another run. The pipeline is your reusable plan; each run keeps its own result.
+
+<details>
+<summary>Using a teammate's engine instead?</summary>
 
 ## Connect to a shared engine
 
-Ask your teammate for the engine address, any access token, and a prepared profile. The engine does the work; the profile selects its AI and tool settings.
+Ask your teammate for its **engine address**, **access token** if required, and a prepared **Engine profile**. Open **Settings → Existing engine**, enter the address and token, then click **Connect engine**.
 
-Open **Settings → Existing engine**, enter the address and supplied access token if required, then choose **Connect engine**. The address is saved only after a successful connection. Your engine choice survives reopening Knotra; the token is used only for this session and is excluded from backups. In the native app, **Use local engine** selects Knotra's managed engine again.
+Use that engine's model source, model, and profile in steps 6 and 8. You can skip starting a local engine. The token lasts for the current session and is excluded from backups. **Use local engine** switches back to the app-managed engine.
 
-Setting up your own engine? Follow [Connect models and agents](/docs/guides/connect-models) for Codex or Claude Code with your account login, local Ollama, or an OpenAI-compatible model server. It includes a small first test. Runs use your provider's available plan or model access.
+</details>

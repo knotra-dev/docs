@@ -1,35 +1,55 @@
 ---
 title: Review an announcement
-description: Follow a draft through review and revision to a saved announcement file.
+description: Run the announcement template, approve its revision, and export the finished Markdown file.
 toc: false
 ---
 
-Explore the example below. The real workflow creates files; it does not send the announcement to customers.
+This example drafts an announcement, checks the facts, asks for your approval, then revises and exports it. It creates files; it does not send anything to customers.
 
-<WorkflowWalkthrough />
+<MermaidDiagram title="A reviewed announcement" chart={'flowchart LR\n  B[Brief] --> D[AI draft]\n  D --> E[Editorial review]\n  E --> H[Your approval]\n  H --> R[Revised announcement]\n  R --> F[publication.md]'} />
 
-<details>
-<summary>Run this with your team</summary>
+## 1. Open the announcement template
 
-[Connect first](/docs/getting-started). Ask which profile to use; choose `local` only if your teammate prepared it.
+1. [Connect a model and start your engine](/docs/guides/connect-models).
+2. Click **New pipeline** in the left sidebar.
+3. In **Ready to run**, click **From brief to reviewed publication**.
+4. Select **Draft**, **Editor**, and **Revise** in turn. Choose your saved **Source** and **Model** in each block.
+5. Select **Package** and choose **Python sandbox** for its **Code environment**. Click **Save**.
 
-1. Open **Pipelines**.
-2. Select **From brief to reviewed publication**.
-3. Choose **Run**.
-4. Select the supplied **Engine profile**.
-5. Choose **Start run**.
-6. Open **Inbox**.
-7. Choose **Engine**.
-8. Open this run's request.
-9. Read **What to do** and **From previous steps**.
-10. Review the brief, draft, and editorial review.
-11. In **Your answer**, set **approved** to true and leave **feedback** empty to approve. Ordinary response schemas have form fields; use **Advanced JSON** only for a complex custom schema.
-12. Choose **Submit response**.
+Using a teammate's engine? Ask which model source, code environment, and **Engine profile** to use. Choose `local` only if it is prepared on that engine.
 
-Missing the example? Find it under **New pipeline → Ready to run**. Keep its sample brief for your first try.
+<DocScreenshot src="/images/guide-publication-pipeline.webp" width={1218} height={997} alt="From brief to reviewed publication showing Draft, Editor, Approve, Revise, and Package" caption="This template is already connected. Choose its model sources and code environment before running it." />
 
-After completion, export `publication.md` from **Artifacts → Engine**. Read the revised text before using it. `review-history.json` keeps the reviews.
+## 2. Start with the sample brief
 
-To decline, leave the request open or use **Request cancellation** in the run. This example does not accept a false approval response.
+1. Click **Run** at the top right.
+2. Select your **Engine profile** in **Run on engine**.
+3. Keep the prefilled **Workflow values (JSON)** for your first try. Its `brief` describes a help center opening next Tuesday, with 24 English articles and Spanish translations still in progress.
+4. Click **Start run**. Knotra drafts the announcement and runs an independent editorial check.
 
-</details>
+This uses three model calls when all steps succeed without retries: draft, editorial review, and revision after your approval.
+
+<DocScreenshot src="/images/guide-publication-run.webp" width={610} height={580} alt="Announcement Run on engine dialog with a brief input and Engine profile" caption="The sample brief is ready to use. Start run begins the work." />
+
+## 3. Read the draft and approve revision
+
+1. Click **Inbox** and select the request for **From brief to reviewed publication**.
+2. Read **What to do**. Under **From previous steps**, read the **brief**, **draft**, and **editorial review**.
+3. In **Approval**, choose **Yes**.
+4. In **Feedback**, type **Keep the announcement concise.**
+5. Click **Submit response**. The model applies the editor's corrections and your feedback before creating the files.
+
+<DocScreenshot src="/images/guide-publication-review.webp" width={895} height={395} alt="Announcement response fields with Approval set to Yes, Feedback, and Submit response" caption="Approval authorizes revision and export. Read the revised result before using it." />
+
+To decline, leave the request open or open its run and click **Request cancellation**. This example accepts only a positive approval response. Use the labeled fields; **Advanced JSON** is for complex custom response schemas.
+
+## 4. Read and export the announcement
+
+1. Click **Runs**, open this run, and wait for **Completed**.
+2. Click **Artifacts** in the sidebar. Search for `publication.md` and select its card. Check the run ID under the filename if you have run the example more than once.
+3. Read the revised announcement in the preview on the right.
+4. Click **Export** and save the file. Select and export `review-history.json` too if you want the brief, original draft, editorial review, human feedback, and final text together.
+
+<DocScreenshot src="/images/guide-publication-artifact.webp" width={320} height={561} alt="publication.md selected in Artifacts with its preview and Export button" caption="Export saves a copy of publication.md. Nothing is published externally." />
+
+For a smaller two-block example, follow [First steps](/docs/getting-started).

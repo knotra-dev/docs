@@ -149,15 +149,18 @@
 }
 
 .mdx details {
-  padding: 1.25rem;
-  margin: 2rem 0;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  padding: 1rem 0;
+  margin: 1.25rem 0;
+  border-top: 1px solid var(--border);
 }
 
 .mdx summary {
   font-weight: 600;
   cursor: pointer;
+}
+
+.mdx details[open] > summary {
+  margin-bottom: 1.5rem;
 }
 
 @media (min-width: 1400px) {

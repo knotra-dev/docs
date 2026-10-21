@@ -3,9 +3,11 @@ title: Command line
 description: Create a pipeline, run it on an engine, follow its progress, and download the results from your terminal.
 ---
 
-Use the CLI to work with Knotra from a terminal or a script. You create a **pipeline** (the plan), start a **run** (one execution), and collect **artifacts** (result files). Work executes on the engine; the CLI connects to it over HTTP/SSE.
+Create a pipeline, run it on an engine, and download the result from your terminal.
 
-The usual path is **init → validate → run → status → artifacts**. Use the prebuilt Docker image below; no Go, Make, or source checkout is needed. Creating and validating a pipeline offline needs no running engine or model.
+`init` → `validate` → `run` → `status` → `artifacts`
+
+Use the prebuilt Docker image or a native release. Creating and validating a pipeline offline needs no engine or model.
 
 [Main commands](#main-commands) · [Inputs](#pass-input-values) · [Results](#follow-progress-and-save-results) · [Scripts](#use-the-cli-in-scripts)
 
@@ -22,9 +24,14 @@ docker compose -f compose.container.yaml --profile tools pull
 docker run --rm ghcr.io/knotra-dev/engine:latest --version
 ```
 
+<details>
+<summary>Image contents or a native release instead</summary>
+
 The engine image includes the CLI, Linux sandbox helper, and Docker CLI. Images support Linux `amd64` and `arm64`. Use `docker run --rm ghcr.io/knotra-dev/engine:latest --help` to inspect commands without starting an engine. The container setup uses the downloaded Compose file; `quickstart` requires the Compose plugin and is intended for the native CLI.
 
 Prefer a native binary? Unpack a [CLI release archive](https://github.com/knotra-dev/engine/releases), keeping both helpers beside the executable, and put `knotra` on your `PATH`. Native `init` and offline `validate` need no Docker. Older releases may use the previous command names. Building from source is covered in [Technical setup](/docs/contributing).
+
+</details>
 
 ## Create your first pipeline
 
@@ -37,11 +44,18 @@ knotra() {
 knotra validate
 ```
 
+Run these commands from the directory containing `compose.container.yaml`. The function above makes the remaining `knotra` commands run inside `my-workflow` for this terminal session.
+
+<details>
+<summary>Working directory, file ownership, and offline validation</summary>
+
 Stay in the directory with `compose.container.yaml`. The `knotra` shell function runs the remaining examples inside `my-workflow`, mounted at `/workspace/my-workflow`; it lasts for this terminal session. The CLI runs as your user, so pipeline files and downloads remain yours. Receipts and event cursors persist in `.knotra-cli` beside the Compose file. With a native CLI, use `knotra init my-workflow` and `cd my-workflow` instead of the container command and function.
 
 `init` creates `my-workflow/pipeline.yaml` and refuses to overwrite an existing file. The starter asks a model for a greeting and saves `greeting.txt`. Open the pipeline file to change the workflow. Both `validate` and `run` use `pipeline.yaml` in the CLI's working directory unless you supply a path. Save input files in `my-workflow` too; downloaded artifacts appear there.
 
 Offline validation checks the package and supplied input values. It does not confirm engine resource access or artifact permissions; use remote validation after connecting.
+
+</details>
 
 ## Connect to an engine
 
@@ -66,11 +80,16 @@ docker compose -f compose.container.yaml up -d --wait
 knotra info
 ```
 
+<details>
+<summary>Persistence, stopping, native quickstart, and other providers</summary>
+
 The engine listens at `http://127.0.0.1:8787` with a prepared `local` profile. Ollama runs separately at `http://127.0.0.1:11434`; the engine does not compile or download the model. Engine files persist in `.knotra-container` and PostgreSQL data in a Docker volume.
 
 The engine runs in the background. `docker compose -f compose.container.yaml logs -f engine` shows server logs. Stop with `docker compose -f compose.container.yaml down`; start again from the same directory to reuse the data. Adding `--volumes` to `down` deletes the database. The engine controls the local Docker socket and needs a trusted operator; workflow code still runs in its separate sandboxes.
 
 For a native CLI, `knotra doctor` checks prerequisites and `knotra quickstart --dir "$PWD/knotra-data" --no-run` starts persistent local infrastructure and serves until Ctrl-C. To use Codex or Claude Code with your account login, follow [Connect models and agents](/docs/guides/connect-models). It also covers local Ollama, OpenAI-compatible model servers, and custom profiles. For the full development workspace, use [Technical setup](/docs/contributing). For image versions, manual `serve` configuration, remote access, and backups, follow [engine deployment](https://github.com/knotra-dev/engine/wiki/Deployment).
+
+</details>
 
 ## Validate and run
 
@@ -81,6 +100,13 @@ knotra validate --remote --profile local
 knotra run --profile local --watch
 ```
 
+Save the returned run ID. Ctrl-C stops watching; the submitted run continues. Use `knotra cancel RUN_ID` to request cancellation.
+
+<MermaidDiagram title="Commands observe work running on the engine" chart={'sequenceDiagram\n  participant CLI as Your terminal\n  participant Engine as Engine\n  participant Work as Models and sandbox\n  CLI->>Engine: run --profile local --watch\n  Engine->>Work: Execute the pipeline\n  Engine-->>CLI: Progress and run ID\n  CLI->>Engine: artifacts download ARTIFACT_ID\n  Engine-->>CLI: Result file'} />
+
+<details>
+<summary>Submit, stream, or wait</summary>
+
 `run` publishes the package and submits a run. Save the returned run ID for later commands. Choose how to observe it:
 
 | Command | What it does |
@@ -89,9 +115,14 @@ knotra run --profile local --watch
 | `knotra run --profile local --watch` | Stream events, then print the final result. |
 | `knotra run --profile local --wait` | Wait without streaming events, then print the final result. |
 
-Choose either `--watch` or `--wait`. Ctrl-C stops watching or waiting; the submitted run continues on the engine. Use `knotra cancel RUN_ID` to request cancellation.
+Choose either `--watch` or `--wait`.
+
+</details>
 
 ### Profile ID or profile file?
+
+<details>
+<summary>Choose the right profile input</summary>
 
 `--profile local` selects a profile already configured on the engine. A local profile YAML file is a different input:
 
@@ -102,7 +133,12 @@ knotra validate --remote --profile local
 
 Use `--profile-file` for offline resource-binding checks. It cannot be combined with `--remote`. `run` and remote validation require a profile ID through `--profile` or `KNOTRA_PROFILE`; they do not upload a profile file. Offline validation ignores `KNOTRA_PROFILE`.
 
+</details>
+
 ## Main commands
+
+<details>
+<summary>Command reference and pagination</summary>
 
 Replace `RUN_ID`, `PIPELINE_ID`, `REQUEST_ID`, and `ARTIFACT_ID` with IDs returned by the CLI.
 
@@ -122,7 +158,14 @@ Replace `RUN_ID`, `PIPELINE_ID`, `REQUEST_ID`, and `ARTIFACT_ID` with IDs return
 
 Resource groups such as `runs`, `pipelines`, `requests`, and `artifacts` list items when used alone. Most lists return one page; add `--all` or use the printed `--cursor` for more. Request filters scan all remaining pages. `artifacts --run RUN_ID` returns all of that run's output artifacts, so it cannot be combined with `--all` or `--cursor`.
 
+</details>
+
 ## Pass input values
+
+To change the greeting's name, run `knotra run --profile local --input 'name="Ada"' --wait`. Keep both sets of quotes: the value after `=` is JSON.
+
+<details>
+<summary>JSON inputs, input files, and artifact uploads</summary>
 
 The starter has a string input named `name`. Values passed through `--input` must be JSON: keep the double quotes around a string inside the shell's single quotes.
 
@@ -154,6 +197,8 @@ knotra run --profile local --artifact source=ARTIFACT_ID
 
 Here `source` must be an artifact input declared by your pipeline; the greeting starter does not declare one.
 
+</details>
+
 ## Follow progress and save results
 
 ```sh
@@ -166,9 +211,19 @@ knotra artifacts download ARTIFACT_ID --output greeting.txt
 
 Choose the artifact named `greeting.txt` from the list. Downloads verify both size and SHA-256 before writing the result. An existing destination file is preserved unless you explicitly add `--force`.
 
+<details>
+<summary>Replay logs or wait with a timeout</summary>
+
 `logs` uses a saved event cursor. Add `--from-start` to replay retained history, or `--cursor EVENT_ID` to resume after a particular event; choose one. To wait for an existing run with a time limit, use `knotra runs wait RUN_ID --timeout 5m`. The timeout stops observation and leaves execution running.
 
+</details>
+
 ## Answer a human request
+
+If a run waits for a person, open this section to read its response schema and submit the exact fields it needs.
+
+<details>
+<summary>Inspect the request schema and submit a response</summary>
 
 A workflow can pause for human input. Inspect the open request, including its prompt, inputs, and expected response schema:
 
@@ -191,7 +246,12 @@ knotra logs RUN_ID
 
 The engine validates the response. Different requests may require different fields; use a file containing `{}` when the schema requires an empty response.
 
+</details>
+
 ## Reuse a published pipeline
+
+<details>
+<summary>Publish once and run the same package again</summary>
 
 Publish once when you want to run the same immutable package repeatedly:
 
@@ -203,7 +263,12 @@ knotra run --definition PIPELINE_ID --profile local --wait
 
 Use the ID returned by publication. A file argument and `--definition` cannot be combined. Use `pipelines show PIPELINE_ID --json` to inspect the package bytes as well as its metadata.
 
+</details>
+
 ## Use the CLI in scripts
+
+<details>
+<summary>JSON output, exit codes, and script example</summary>
 
 Add `--json` (or `-j`) for stable fields instead of parsing text tables. Results go to stdout; errors go to stderr. For example:
 
@@ -228,7 +293,12 @@ The final JSON contains `run` and `operationId`; a status snapshot contains `run
 
 Use `--wait` when a script must fail if execution fails; a successful submission alone only confirms acceptance.
 
+</details>
+
 ## Recover and get help
+
+<details>
+<summary>Recover uncertain submissions and find full help</summary>
 
 If a connection drops after a command was sent, inspect its saved receipt before submitting again:
 
@@ -249,8 +319,15 @@ knotra artifacts download --help
 
 The [full CLI reference](https://github.com/knotra-dev/engine/wiki/CLI) covers every flag, migration from older commands, resource management, and engine operation. For connection problems, start with [Troubleshooting](/docs/troubleshooting).
 
+</details>
+
 ## Connect an MCP assistant to Desktop
+
+<details>
+<summary>Desktop control and external tool discovery</summary>
 
 The CLI also provides `knotra mcp serve --desktop` for Knotra's desktop control server. Use **Settings → Control Knotra with MCP → Copy configuration** to obtain the complete command and bridge-file arguments for your installation. Keep the app open. The assistant can edit visible pipelines, configure sources, and manage engine work through 29 tools; the [control guide](/docs/guides/control-knotra) covers revisions and retry behavior.
 
 `knotra mcp discover --json` is a separate tool-discovery command used by Desktop's [external MCP setup](/docs/guides/mcp-tools). It lists a server's tools without executing them. These two commands serve different purposes: one exposes control of the live app, and the other discovers external tools for pipeline blocks.
+
+</details>

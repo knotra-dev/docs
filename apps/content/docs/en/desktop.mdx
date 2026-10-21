@@ -1,33 +1,68 @@
 ---
 title: Find your way around
-description: Build pipelines, choose connections per block, follow runs, and answer human requests.
+description: See where to edit a pipeline, start a run, answer a review, and get the result.
 toc: false
 ---
 
-Choose an area below to see what it is for. Start work in **Pipelines**, follow it in **Runs**, respond in **Inbox**, and collect files in **Artifacts**.
+These screens use **My first pipeline**, the two-block greeting from [First steps](/docs/getting-started). Open that lesson if your workspace is empty.
 
 ## Build and configure
 
-A new workspace starts empty. Use the interactive tour for one learning pipeline, or choose **New pipeline** to build your own or pick an optional template. **Settings → Learn to use Knotra → Restart tour** opens the lesson again and keeps your edits.
+1. Click **Pipelines** in the left sidebar, then open your pipeline.
+2. Click a block on the canvas. Edit its **Instructions** in the panel on the right, then click outside the field to apply.
+3. For a model block, choose its **Source** and **Model**. Each block keeps its own choice.
+4. Click **Save** in the editor header.
 
-In a pipeline, the header shows its local save state and provides **Save** and **Run**. **Canvas**, **Code**, and **Files** switch views of the same pipeline package. Select a block on the canvas to edit its instructions, inputs, outputs, and connections. Use **Workflow** for pipeline-wide inputs and outputs.
+<DocScreenshot src="/images/beginner-06-model.webp" width={340} height={717} alt="Answer block settings with Instructions, Source, and Model" caption="Select a block to edit it. Source and Model are below Instructions." />
 
-Choose models, code environments, and tools in each block. **Resources** shows which blocks use each connection and offers **Set up** actions. Internal names such as `writer` are created for you. [Choose block connections](/docs/guides/block-connections) explains the selectors and agent permissions.
+Connect an output to an input by clicking the output's small circle, then the input's circle. The line passes that value to the next block.
 
-**Settings** keeps model providers, external MCP servers, local engine controls, existing-engine connection, assistant MCP control, appearance, backups, and the tour in separate sections. Start the local engine there after saving a source. Once configured and selected, it starts automatically on later app launches.
+<DocScreenshot src="/images/beginner-04-connect.webp" width={660} height={253} alt="The Answer text output connected to the Human draft input" caption="The greeting leaves Answer through text and enters Human through draft." />
+
+**Canvas**, **Code**, and **Files** show the same pipeline package. Click **Workflow** for pipeline-wide inputs and outputs. Click **Resources** in the sidebar to inspect connections and use a block's **Set up** action. [Choose block connections](/docs/guides/block-connections) covers tools and code environments.
 
 ## Follow and review
 
-Open a run to see **Pipeline activity**: readable step names, status changes, model and tool activity, and retry attempts. **Technical details** contains execution IDs when you need them. **Replay** explores saved execution history.
+### Start a run
 
-When a run waits for you, open its request in **Inbox**. Read **What to do** and **From previous steps**, complete the fields under **Your answer**, then choose **Submit response**. The form follows that request's schema. Complex custom schemas can use **Advanced JSON**.
+1. Open your pipeline and click **Run** at the top right.
+2. In **Run on engine**, check the **Engine profile** and **Workflow values (JSON)**.
+3. Click **Start run**. The app opens the run so you can follow its progress.
 
-Finished files are available in **Artifacts**. Saved sources and pipeline choices persist across restarts; credentials are excluded from workspace backups. Source changes wait until unfinished runs complete before the local engine refreshes its configuration.
+If the header says **Local engine**, click it first. In Settings, keep Docker running and choose **Start local engine**. Wait for **Running**, then reopen the pipeline from the left sidebar. [Model setup](/docs/guides/connect-models) covers saving a source first.
+
+<DocScreenshot src="/images/beginner-08-run.webp" width={610} height={580} alt="Run on engine dialog with Engine profile, workflow input JSON, and Start run" caption="Run opens this dialog. Start run begins the work." />
+
+### Answer a review
+
+1. Click **Inbox** in the sidebar and choose the request for your run.
+2. Read **What to do** and **From previous steps**.
+3. Complete the response fields, then click **Submit response**.
+
+<DocScreenshot src="/images/beginner-09-reply.webp" height={1000} alt="My first pipeline review request with the greeting and Your answer field" caption="This greeting lesson needs a text reply. Other pipelines can ask for approval or different fields." />
+
+### Read the result
+
+1. Click **Runs** and open the run with your pipeline's name.
+2. Wait for **Completed**, then click **Outputs**.
+3. For the greeting lesson, read **values → answer**. It returns text, so there is no file to export.
+
+<DocScreenshot src="/images/beginner-10-result.webp" width={1218} height={410} alt="Completed greeting run with its answer in the Outputs tab" caption="Each run keeps its own inputs, progress, and outputs." />
+
+To inspect progress, open **Live graph** and click a block. Use its **Activity** or **Data** tab; **Timeline** shows pipeline activity, and **Replay** explores saved history. Execution IDs are in **Technical details** when you need them.
 
 ## Explore the areas
 
-These screenshots show an earlier sample workspace. Current controls follow the instructions above; new installations have an empty workspace and an optional interactive tour.
+For a pipeline that creates files, click **Artifacts**, select the file's card, then click **Export** in its right-hand preview. [Review an announcement](/docs/guides/first-workflow) walks through a workflow that creates `publication.md`.
 
-<WorkspaceTour />
+<details>
+<summary>Templates, Settings, and saved work</summary>
 
-[Try a reviewed announcement](/docs/guides/first-workflow) · [Add external MCP tools](/docs/guides/mcp-tools) · [Control Knotra with MCP](/docs/guides/control-knotra)
+- **New pipeline → Ready to run** opens optional templates. **Settings → Learn to use Knotra → Restart tour** reopens the learning pipeline and keeps your edits.
+- **Settings** contains model providers, MCP servers, the local engine, existing-engine connection, assistant MCP control, appearance, and backups.
+- Sources and pipeline choices persist across restarts. Credentials are excluded from workspace backups. Connection changes apply when unfinished runs complete, including human waits and paused runs.
+- Inbox forms follow each request's schema. Use **Advanced JSON** for complex custom responses.
+
+</details>
+
+[Add external MCP tools](/docs/guides/mcp-tools) · [Control Knotra with MCP](/docs/guides/control-knotra)

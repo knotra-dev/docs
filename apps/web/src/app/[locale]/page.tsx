@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server'
 import type { LocaleOptions } from '@/lib/opendocs/types/i18n'
-import { WorkflowWalkthrough } from '@/components/docs/workflow-walkthrough'
+import { ArrowRightIcon } from '@radix-ui/react-icons'
+import { DocScreenshot } from '@/components/docs/doc-screenshot'
 import { buttonVariants } from '@/components/ui/button'
 import { Link } from '@/navigation'
 
@@ -10,33 +11,47 @@ export default async function IndexPage(props: {
   const { locale } = await props.params
   setRequestLocale(locale)
   return (
-    <div className="container mx-auto max-w-5xl py-10 sm:py-14">
-      <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">
-        Build a workflow you can follow.
-      </h1>
-      <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-        Learn with the interactive tour. Choose a model or tool for each block,
-        run your pipeline, and review the result.
-      </p>
-      <WorkflowWalkthrough />
+    <div className="container mx-auto max-w-6xl py-10 sm:py-14">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-5xl">
+            Your first pipeline, in pictures.
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+            Connect blocks. Choose a model. Review the result.
+          </p>
+        </div>
+        <Link className={buttonVariants()} href="/docs/getting-started">
+          Follow the visual guide
+          <ArrowRightIcon aria-hidden="true" className="ml-2 size-4" />
+        </Link>
+      </div>
+      <DocScreenshot
+        alt="Knotra pipeline editor with a model block connected to a human review"
+        caption="The pipeline editor · sample research workflow"
+        src="/images/pipeline-editor.webp"
+      />
       <nav
-        aria-label="Keep exploring"
-        className="mt-10 flex flex-wrap gap-3 border-t pt-8"
+        aria-label="Visual guides"
+        className="mt-10 grid gap-0 border-y sm:grid-cols-3"
       >
-        <Link className={buttonVariants()} href="/docs/desktop">
-          Take a visual tour of the app
+        <Link
+          className="flex items-center justify-between gap-4 py-6 font-medium hover:text-primary-active sm:pr-6"
+          href="/docs/desktop"
+        >
+          Find a screen <ArrowRightIcon aria-hidden="true" />
         </Link>
         <Link
-          className={buttonVariants({ variant: 'outline' })}
-          href="/docs/getting-started"
+          className="flex items-center justify-between gap-4 border-t py-6 font-medium hover:text-primary-active sm:border-t-0 sm:px-6"
+          href="/docs/guides/connect-models"
         >
-          Build your first pipeline
+          Connect a model <ArrowRightIcon aria-hidden="true" />
         </Link>
         <Link
-          className={buttonVariants({ variant: 'outline' })}
-          href="/docs/guides/control-knotra"
+          className="flex items-center justify-between gap-4 border-t py-6 font-medium hover:text-primary-active sm:border-t-0 sm:pl-6"
+          href="/docs/guides/mcp-tools"
         >
-          Connect an assistant with MCP
+          Add tools <ArrowRightIcon aria-hidden="true" />
         </Link>
       </nav>
     </div>

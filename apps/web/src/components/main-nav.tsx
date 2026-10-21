@@ -15,7 +15,7 @@ export function MainNav({ messages }: MainNavProps) {
   const pathname = usePathname()
 
   return (
-    <div className="mr-4 hidden md:flex">
+    <div className="mr-4 hidden lg:flex">
       <Link className="mr-6 flex items-center space-x-2" href="/">
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}

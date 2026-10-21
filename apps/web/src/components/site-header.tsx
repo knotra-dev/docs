@@ -36,7 +36,7 @@ export async function SiteHeader() {
           }}
         />
 
-        <Link className="mr-2 text-base font-semibold md:hidden" href="/">
+        <Link className="mr-2 text-base font-semibold lg:hidden" href="/">
           Knotra
         </Link>
 

@@ -1,49 +1,130 @@
 ---
 title: Connect models and agents
-description: Save multiple model sources and choose a source and model for each workflow block.
+description: Save a source, choose a model, and start your engine.
+toc: false
 ---
 
-Use **Codex with your ChatGPT account** or **Claude Code with your Claude account**. Knotra runs the installed command-line tool using its saved sign-in. You do not need to create an API key for either account connection.
+Connect a model in Settings, choose it in a block, then start the engine. Follow the pictures below for the native desktop app.
 
-Already using a teammate's engine? Ask for its address, engine access token if required, and profile name, then skip to [Connect Desktop](#connect-desktop). The person running the engine prepares its agent or model connections.
+Using a teammate's engine? Jump to [Connect Desktop](#connect-desktop).
 
 ## Choose your connection
 
-| You want to use… | Connection type | What you need on the engine computer |
-| --- | --- | --- |
-| Your Codex account access | Codex (ChatGPT account) | Codex CLI installed and signed in with ChatGPT. |
-| Your Claude Code account access | Claude Code (Claude account) | Claude Code CLI installed and signed in with your Claude subscription or eligible team account. |
-| Another hosted or local model server | OpenAI-compatible API | Its API base URL and exact model ID; a key only if that server requires one. |
-| A model running locally in Ollama | Ollama (local) | Ollama running with the model installed. |
+1. Click **Settings** at the bottom left of the app.
+2. Find **Model providers** and click **Add source**. For your first source, the choices are already open.
+3. Click the provider you want to use. The table below shows what to have ready.
 
-The account connections use your plan's normal model access and usage limits. OpenAI-compatible servers have their own access and billing arrangements.
+<DocScreenshot src="/images/guide-provider-picker.webp" width={1000} height={372} alt="Model providers showing the six provider choices after Add source" caption="Settings → Model providers → Add source. Pick your provider to open its connection form." />
 
-A **model connection** supplies the AI response. An **Agent step** can use that connection repeatedly while calling the tools your workflow allows. An **AI step** asks for one response. You can use the same connection for both.
+| Source | What you need |
+| --- | --- |
+| **Codex** | Codex CLI signed in with ChatGPT. No API key. |
+| **Claude Code** | Claude Code CLI signed in with your Claude account. No API key. |
+| **OpenAI API / Anthropic API** | That provider's API key. |
+| **OpenAI-compatible** | API base URL, exact model ID, and a key if required. |
+| **Ollama** | Ollama running with a model installed. No cloud API key. |
+
+Account connections use your plan's access and usage limits. API providers may charge for requests. An **AI step** asks once; an **Agent step** can ask repeatedly and use its allowed tools.
 
 ## Save sources in Desktop
 
-Native Desktop includes the local engine. Open **Settings → Model providers → Add source**. **Manage model sources** in a block or the Resources view opens the same settings.
+### 1. Name and connect the source
 
-1. Select a provider button: **Codex**, **Claude Code**, **OpenAI API**, **Anthropic API**, **OpenAI-compatible**, or **Ollama**. This opens that provider’s setup form. **Change provider** returns to the choices.
-2. Give the connection a useful **Source name**, such as `Work API` or `Local Ollama`. For Codex or Claude Code, explicitly choose **Sign in** or **Use signed-in account**. Knotra does not sign you in automatically. For an API source, enter the key; it is saved in the operating system credential store. **OpenAI-compatible** also needs its **API base URL**; its key is optional if the server does not require one.
-3. Choose **Load models** to fetch the catalog, then **Save source**. If the provider cannot list models, enter its model ID once here when saving the source. That model becomes available in the source’s catalog for your blocks.
-4. Repeat **Add source** for other providers, API accounts, or endpoints. Sources from the same provider can have separate names and credentials. You can use them alongside Codex, Claude, and Ollama.
+Enter a **Source name** you will recognize, such as **My model**. Complete the fields for your provider:
 
-Select a model or agent block in a pipeline, then choose its **Source** and **Model** from the dropdowns. The selection belongs to that block: changing it does not change other blocks that used the same alias. Saved catalogs are available with the engine stopped. If a model is missing, open **Manage model sources** and **Refresh models** for that source. **Use provider default** selects the source’s default model. Existing saved models remain selected even if the catalog no longer lists them. Model IDs are selected here; the fallback ID field in source setup is only for providers that cannot list a catalog.
+<details>
+<summary>Codex or Claude Code: use your account</summary>
 
-You do not need to create a name such as `writer`. Knotra creates these internal links when you choose a connection. **Workflow → Resources → Advanced resource bindings** exposes them for editing pipeline files; shared binding edits affect all blocks using that binding. See [Choose block connections](/docs/guides/block-connections) for code environments and agent permissions.
+1. Install the provider's CLI on this computer if you have not already. The [Codex](#connect-codex-with-chatgpt) and [Claude Code](#connect-claude-code-with-your-claude-account) setup instructions are below.
+2. Click **Sign in** and complete the provider's browser sign-in. If that CLI is already signed in to the account you want, click **Use signed-in account** instead.
+3. Return to Knotra, then continue with **Load models** below.
 
-Source names, endpoints, catalogs, and node choices survive app restarts. API keys are not included in workspace exports or backups. Existing native settings migrate without removing engine history. If an older installation kept an API key only for its current session, edit that source and save the key once.
+<DocScreenshot src="/images/guide-account-source.webp" width={1000} height={605} alt="Codex source form with Source name, Sign in, and Use signed-in account controls" caption="For account sources, choose Sign in or Use signed-in account before loading models." />
+
+</details>
+
+<details>
+<summary>OpenAI API, Anthropic API, or OpenAI-compatible: enter API details</summary>
+
+1. Enter the provider's **API key** if required.
+2. For **OpenAI-compatible** only, enter its **API base URL**. Use the API address supplied by your provider, without adding `/chat/completions`.
+3. Continue with **Load models** below.
+
+<DocScreenshot src="/images/guide-api-source.webp" width={1000} height={735} alt="OpenAI-compatible source form with Source name, API base URL, and optional API key" caption="Example connection fields. Replace the example address with your provider's real API base URL." />
+
+API keys stay in the operating system credential store and are excluded from workspace backups.
+
+</details>
+
+<details>
+<summary>Ollama: use a local model</summary>
+
+1. Open Ollama and make sure a model is already installed. Follow [local Ollama setup](#connect-a-local-ollama-model) if needed.
+2. Choose **Ollama** and enter your **Source name**. No API key or address is needed in this form.
+3. Continue with **Load models** below. This lists installed models; it does not download them.
+
+</details>
+
+### 2. Load models and save
+
+1. Click **Load models**. A list of available models appears in the form.
+2. Click **Save source**. The form closes and your source appears in the saved list.
+
+<DocScreenshot src="/images/beginner-05-source.webp" width={1000} height={562} alt="Ollama source named My model with its loaded model list and Save source button" caption="The same Load models → Save source steps apply after connecting your provider. This example uses Ollama." />
+
+If loading fails or the list is empty, open **Enter a model ID when the catalog is unavailable** and enter the exact **Model ID** your provider supports, then save.
+
+### 3. Choose the source in a block
+
+1. Open **Pipelines** and your pipeline, then click a **Model** or **AI agent** block.
+2. In its **Setup** panel, choose your saved **Source**.
+3. In **Model**, choose a model from that source or **Use provider default**.
+4. Click **Save** in the pipeline header. That block keeps this choice.
+
+<DocScreenshot src="/images/beginner-06-model.webp" width={340} height={717} alt="Answer block Setup panel with Source My model and Model Use provider default" caption="Choose Source first, then Model. This picture shows a source named My model." />
+
+<details>
+<summary>More sources, missing models, and saved credentials</summary>
+
+- Add as many sources as needed, including separate accounts or endpoints for the same provider. **Change provider** returns to the provider choices.
+- **Manage model sources** in a block or Resources opens these settings. Choose **Refresh models** if a model is missing; **Use provider default** selects the source's default model.
+- Each block keeps its own model choice. Existing choices stay selected even if a catalog no longer lists them. Saved catalogs work with the engine stopped.
+- Source names, endpoints, catalogs, and block choices survive restarts. API keys stay in the operating system credential store and are excluded from workspace exports and backups. Older session-only keys need to be entered and saved once.
+- Knotra creates internal connection links for you. **Workflow → Resources → Advanced resource bindings** exposes them for pipeline-file editing; shared binding edits affect every block using that binding. [Choose block connections](/docs/guides/block-connections) covers environments and agent permissions.
+
+</details>
+
+### Refresh or edit a saved source
+
+1. Open **Settings → Model providers**.
+2. Click a source's **name** to edit its connection, or the circular-arrow button beside it to **Refresh models**.
+3. If you edit the form, click **Save changes**. Return to the block's **Model** dropdown to choose a newly available model.
+
+<DocScreenshot src="/images/guide-source-actions.webp" width={1000} height={174} alt="Saved model source row with its clickable source name, Refresh models, and Remove buttons" caption="Click the source name to edit. The circular arrow refreshes its model catalog; the bin removes the source." />
+
+Removing a source leaves its pipeline blocks in place. Select another source in those blocks before running them again.
 
 ## Start the local engine
 
-Open **Settings → Local engine** and choose **Start local engine** after saving at least one model source or [MCP server](/docs/guides/mcp-tools). Keep Docker running for the engine database and workflow sandboxes. After the first setup, the selected local engine starts automatically when you reopen Knotra using the saved sources; this never initiates account sign-in. Explicitly stopping it keeps it stopped for the rest of that app session.
+1. Keep **Docker running** and save at least one model source or [MCP server](/docs/guides/mcp-tools).
+2. Open **Settings**, scroll to **Local engine**, and click **Start local engine**.
+3. Wait for **Running** and a connected engine, then return to your pipeline and click **Run**.
 
-**Stop local engine** keeps sources, credentials, and saved runs. Saving, editing, or removing a source updates the saved catalog immediately without interrupting existing runs. The running local engine applies the changes automatically after all unfinished runs complete, including paused runs, human waits, and scheduled retries, then briefly refreshes while idle. Pending changes survive reopening Knotra. Until they apply, the engine keeps its last working configuration and the credentials needed by existing runs. A manually selected existing engine stays selected; local source edits do not switch your connection.
+<DocScreenshot src="/images/beginner-07-engine.webp" width={1000} height={245} alt="Local engine settings showing its Running status and Stop local engine control" caption="Wait for Running. Saving a source and starting the engine are separate actions." />
 
-Use **Edit**, **Refresh models**, or **Remove** beside a source to manage it. Removing a source does not rewrite pipeline blocks that use it; select another source in those blocks before their next run.
+<details>
+<summary>Automatic startup, source changes, and saved runs</summary>
 
-The terminal instructions below are for managing your own engine, including an engine on another computer.
+The selected local engine starts automatically when you reopen Knotra. This uses saved sources and never starts account sign-in. **Stop local engine** keeps it stopped for the rest of that app session and preserves sources, credentials, and runs.
+
+Source edits update the saved catalog immediately. The running engine applies them after **every unfinished run completes**, including paused runs, human waits, and scheduled retries. It keeps its working configuration and credentials until then; pending changes survive reopening Knotra. Existing native settings migrate without removing engine history.
+
+Use **Edit**, **Refresh models**, or **Remove** beside a source. Removing one does not rewrite its pipeline blocks; choose another source in those blocks before running them again. Local source edits never switch you away from an existing engine selected manually.
+
+</details>
+
+<details>
+<summary>Manual setup: separate engine, Codex, or Claude Code</summary>
 
 ## Prepare a separate engine
 
@@ -136,21 +217,36 @@ The commands above use Claude Code's default model. Add `--model MODEL_ID` to bo
 
 If the browser cannot return to Claude Code, follow its displayed instructions to copy the login URL and paste the returned login code into the terminal. See [Claude Code authentication](https://code.claude.com/docs/en/authentication) for account and sign-in help.
 
+</details>
+
 ## Connect Desktop
 
-When quickstart prints **Ready for your pipelines**, leave that terminal open. Its engine address is normally `http://127.0.0.1:8787`.
+For an engine you or a teammate started separately:
 
-1. Open Knotra Desktop → **Settings → Existing engine**.
-2. Enter the engine address and access token if required. Local quickstart does not require a token. For a shared engine, use the token its owner supplies.
-3. Choose **Connect engine** and wait for **Connected**. Knotra saves the address only after a successful connection.
-4. Open **Resources** to inspect the connections used by your pipeline. Expand **Available engine connections** to inspect the engine's configured sources and environments. A separately configured quickstart engine may show `local / model_main`; `local` is the profile name and `model_main` is its model connection ID.
-5. Select a model or agent block in a pipeline, choose its **Source** (`local / model_main` for quickstart), then select its **Model** or **Use provider default**. Each block keeps its own selection. For saved sources, refresh a missing model catalog through **Manage model sources**. Existing saved choices are preserved. In the run dialog, choose the prepared **Engine profile** (`local` for quickstart). **Workflow → Resources → Advanced resource bindings** is available for direct alias edits.
+1. Open **Settings → Existing engine**.
+2. Fill **Engine base URL** with its address and **Engine access token** if required. Local quickstart normally uses `http://127.0.0.1:8787` without a token.
+3. Choose **Connect engine** and wait for **Connected**.
+4. Choose a block's **Source** and **Model**. For quickstart, use `local / model_main` and the `local` **Engine profile** in the run dialog.
 
-Your existing-engine choice survives reopening Knotra. Saved local-source changes do not replace that connection. In the native app, choose **Use local engine** to select Knotra's managed engine again.
+<DocScreenshot src="/images/guide-existing-engine.webp" width={1000} height={392} alt="Existing engine settings with Engine base URL, Engine access token, and Connect engine" caption="Settings → Existing engine. Enter the address your teammate supplied, then click Connect engine." />
 
-The **engine access token** lets Desktop reach the engine. It is used only for this session and is not included in workspace backups. Your **CLI account sign-in** lets Codex or Claude Code do the AI work. You do not paste the CLI's login credentials into Desktop or into a workflow.
+The **engine access token** connects Desktop to the engine. Keep CLI account credentials out of Desktop and workflows. The engine owner prepares its model sources.
+
+<details>
+<summary>Inspect connections and return to the local engine</summary>
+
+Quickstart prints **Ready for your pipelines** when ready; leave its terminal open. **Resources → Available engine connections** lists its sources and environments. In `local / model_main`, `local` is the profile and `model_main` the connection ID.
+
+Each block keeps its own model selection, including existing saved choices. Use **Use provider default** for the source default or **Manage model sources** to refresh a saved catalog. **Workflow → Resources → Advanced resource bindings** exposes direct alias edits.
+
+Desktop saves the address only after a successful connection. Your choice survives reopening Knotra; native **Use local engine** selects the managed engine again. The access token is session-only and excluded from workspace backups. CLI account sign-in belongs to the engine's user and supplies the AI access separately.
+
+</details>
 
 ### Check your first real run
+
+<details>
+<summary>Run the greeting and find greeting.txt</summary>
 
 The interactive tour explains the controls without starting a run. To check the real connection, use the small greeting example. **This uses your account's model access and counts toward its usage limits.** A compatible API provider may charge for its requests.
 
@@ -167,11 +263,26 @@ A successful run ends with **Status: succeeded**, includes a greeting, and creat
 
 For account connections, `doctor` checks required CLI options and sign-in status before checking Docker. It does not generate a response. The small real run verifies that the account can actually use the chosen model. An available connection does not guarantee remaining plan allowance or successful generation.
 
+</details>
+
 ### Use the connection in an agent
 
-Select a **Source** and **Model** for an **AI agent** block, then choose its **Code environment** and **Code permissions** if it needs files or commands. Enable individual **MCP tools** if it needs an [external MCP server](/docs/guides/mcp-tools). Knotra uses Codex or Claude Code for AI decisions and executes the selected tools through its permissions and run history.
+Choose the **Source** and **Model**, then grant only what the block needs:
 
-Knotra manages the workflow's tools. The account connector does not import your previous CLI conversations, personal hooks, plugins, or MCP configuration, and it restricts native CLI actions. Add the tools the workflow needs in Knotra. Connecting a model alone does not prepare web search or other external services. An agent may make several model requests during one step, so start with the greeting before trying a larger workflow.
+| The agent needs… | Configure… |
+| --- | --- |
+| Files or commands | **Code environment** and **Code permissions** |
+| An external service | Individual **MCP tools** from a [saved MCP server](/docs/guides/mcp-tools) |
+
+<details>
+<summary>What the account connection includes</summary>
+
+Knotra uses Codex or Claude Code for decisions and executes tools through its own permissions and run history. It restricts native CLI actions and does not import previous conversations, hooks, plugins, or MCP settings. Connecting a model alone does not add web search or external services. An agent may make several model requests in a step; check the greeting before a larger workflow.
+
+</details>
+
+<details>
+<summary>Manual setup: model servers, Ollama, profiles, and Docker Compose</summary>
 
 ## Connect another model server
 
@@ -299,7 +410,12 @@ docker compose -f compose.container.yaml -f compose.models.yaml up -d --wait
 
 Use both `-f` files for future Compose start/stop commands. Compose must pass a required API key into the engine container; exporting it only on your host is insufficient. Reconnect Desktop, then repeat the small validation/run check with your existing hello pipeline.
 
+</details>
+
 ## Fix connection problems
+
+<details>
+<summary>Find your error and next step</summary>
 
 | What you see | What to check next |
 | --- | --- |
@@ -320,5 +436,7 @@ Use both `-f` files for future Compose start/stop commands. Compose must pass a 
 | Engine or database port is occupied | Stop the existing engine, or choose free `--listen` and `--postgres-port` values. Its database may still run after Ctrl-C. |
 
 When asking for help, share the displayed error, connection type, selected model, and whether the engine is native, in Docker, or on another machine. Keep account tokens, API keys, and engine tokens private.
+
+</details>
 
 [First steps](/docs/getting-started) · [Use the CLI](/docs/cli) · [Engine deployment reference](https://github.com/knotra-dev/engine/wiki/Deployment)

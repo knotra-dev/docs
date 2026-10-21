@@ -1,30 +1,48 @@
 ---
 title: Control Knotra with MCP
-description: Connect an assistant to create pipelines, manage sources, and run work in the live desktop app.
+description: Let an assistant build pipelines in the app, then review them before running.
+toc: false
 ---
 
-Knotra's MCP control server lets an assistant work with the same pipelines, sources, and engine session you see in the desktop app. Keep Knotra open with its workspace loaded while using it.
-
-This controls **Knotra itself**. To let a pipeline call another service's tools, [add that external MCP server](/docs/guides/mcp-tools) instead.
+**Keep Knotra open. Connect your assistant. Review its work in the app.** This connection controls Knotra itself; [external MCP servers](/docs/guides/mcp-tools) give tools to pipeline blocks.
 
 ## Connect your assistant
 
-1. Open **Settings → Control Knotra with MCP** in the native app.
-2. Expand **MCP client configuration** and choose **Copy configuration**.
-3. Add the copied server configuration to your assistant's MCP settings and connect it.
-4. Ask the assistant to read the included `knotra://guide` and `knotra://schema/v1` resources before creating or editing pipelines.
+1. In native Desktop, click **Settings** at the bottom left, then **Control Knotra with MCP**.
+2. Click **MCP client configuration** to expand it.
+3. Click **Copy configuration** below the configuration box.
 
-The copied configuration uses Knotra's bundled CLI and its local authenticated desktop bridge. Use the app's configuration rather than inventing executable or bridge paths. No engine is required to create and edit a local pipeline; running one requires a configured engine and its dependencies.
+<DocScreenshot src="/images/control-knotra.webp" width={1000} height={755} alt="Control Knotra with MCP settings with MCP client configuration expanded and Copy configuration below it" caption="Settings → Control Knotra with MCP → MCP client configuration → Copy configuration. The pictured paths are examples; copy your app's configuration." />
 
-A useful first request is: “List my model sources, then create a pipeline with one model block and a human review. Show it in Knotra and validate it. Wait for me before starting a run.” The new pipeline and its graph appear in the app, where you can review or change them.
+**Check:** the button changes to **Copied**. Keep Knotra open with your workspace loaded.
+
+4. Open your assistant's MCP settings. Add the copied server configuration and connect it; the exact location depends on your assistant.
+5. Ask the assistant to read `knotra://guide` and `knotra://schema/v1`, then send this request:
+
+> List my model sources. Create a pipeline with an Answer model block that writes a greeting, followed by a Human review block receiving its text. Show it in Knotra and validate it. Wait for me before starting a run.
+
+6. Return to Knotra and open the new pipeline. Click each block to check its instructions and connections before running.
+
+<DocScreenshot src="/images/beginner-04-connect.webp" width={660} height={253} alt="An Answer model block connected to a Human review block on the Knotra canvas" caption="Example draft to check in Knotra: Answer → Human. Your assistant's exact block layout may differ." />
+
+**Check:** the pipeline is visible in the app and the model output connects to the human input. Creating and validating a draft does not start a run.
+
+Use the copied configuration; its bundled CLI and authenticated desktop bridge paths belong to your installation. Editing needs no engine. Running needs a configured engine and its dependencies.
 
 ## What the assistant can do
 
-The server exposes 29 tools. Their current input schemas are available through MCP discovery.
+**Build pipelines · configure sources · connect the engine · run and inspect work.** Account login still requires you to complete the provider's sign-in. Saved API keys and tokens are write-only and never returned by list or read tools.
+
+<MermaidDiagram title="An assistant works in your open workspace" chart={'flowchart LR\n A["Your assistant"] -->|"MCP configuration"| B["Open Knotra app"]\n B --> C["Edit pipeline"]\n C --> D["Review + validate"]\n D -->|"Start a run"| E["Configured engine"]'} />
+
+<details>
+<summary>All 29 tools and engine operations</summary>
+
+Current input schemas are available through MCP discovery.
 
 | Task | Tools |
 | --- | --- |
-| Inspect and navigate the app | `app_status`, `app_navigate` |
+| Inspect and navigate | `app_status`, `app_navigate` |
 | Create and edit pipelines | `pipeline_list`, `pipeline_get`, `pipeline_create`, `pipeline_update`, `pipeline_delete`, `pipeline_validate`, `pipeline_publish` |
 | Configure model sources | `model_source_list`, `model_source_catalog`, `model_source_save`, `model_source_refresh`, `model_source_remove` |
 | Complete account setup | `model_source_sign_in`, `model_source_sign_in_status`, `model_source_sign_in_cancel` |
@@ -32,26 +50,43 @@ The server exposes 29 tools. Their current input schemas are available through M
 | Manage the engine connection | `engine_status`, `engine_start`, `engine_stop`, `engine_connect`, `engine_disconnect` |
 | Run and inspect work | `engine_call`, `artifact_download` |
 
-`engine_call` accepts defined operations for profiles, resources, validation, publication, runs, step history, human requests, resolution, and artifacts. It is not an arbitrary HTTP request tool. For example, the assistant can inspect engine resources, start a published pipeline, read its human request, and submit schema-valid output values.
+`engine_call` accepts defined operations for profiles, resources, validation, publication, runs, step history, human requests, resolution, and artifacts. It does not accept arbitrary HTTP requests. An assistant can inspect resources, start a published pipeline, read a human request, and submit schema-valid output.
 
-Account sign-in still requires you to complete the provider's login. API keys, MCP tokens, and engine access tokens are write-only: the assistant can supply them during setup, but list and read results do not return saved credentials. Source edits appear in Settings. The local engine applies them automatically at a safe idle point after unfinished runs complete.
+The assistant can supply credentials during setup, but reads do not reveal saved credentials. Source edits appear in Settings; the local engine applies them after unfinished runs complete.
+
+</details>
 
 ## Edit without overwriting newer work
 
-The assistant should list pipelines, read the complete target with `pipeline_get`, and pass that exact `revision` as `expectedRevision` when updating or deleting it. Omitted package fields are preserved. Package file contents use base64, including text files.
+<details>
+<summary>Revision checks, unsaved drafts, and conflicts</summary>
 
-Existing unsaved edits require explicit `allowDirty: true` after reading the draft. If you are typing in a pipeline editor, a conflicting control action can return `busy`. On a conflict, the assistant must read the latest state and reconcile its change. It should not overwrite an unseen revision. Pipeline publication checks the current revision and creates an immutable engine definition; publication alone does not start a run.
+1. List pipelines, then read the complete target with `pipeline_get`.
+2. Pass its exact `revision` as `expectedRevision` when updating or deleting. Omitted package fields are preserved; file contents use base64, including text files.
+3. Read an unsaved draft before explicitly using `allowDirty: true`. Editing while someone types can return `busy`.
+4. On a conflict, read the latest state and reconcile the change. Never overwrite an unseen revision.
 
-Model-source and MCP-server edits, refreshes, and removals also require the latest connection `revision` as `expectedRevision`. Creating a source omits its ID and expected revision. Refreshing an external MCP server never automatically grants new tools.
+Publishing checks the current revision and creates an immutable engine definition. **Publication alone does not start a run.**
+
+Model-source and MCP-server edits, refreshes, and removals also need the latest `revision` as `expectedRevision`. New sources omit ID and expected revision. MCP refresh never grants newly discovered tools automatically.
+
+</details>
 
 ## Recover an uncertain action
 
-Ordinary mutating control tools require a unique `requestId`. Within the current app session, retry an uncertain response with the same ID and identical arguments. A definitive `busy` rejection requires reading the latest state and using a new request ID.
+<details>
+<summary>Retry IDs, app restarts, and large artifacts</summary>
 
-These control receipts do not survive app restarts. After reopening Knotra, first list or read the relevant pipelines and sources to confirm what was applied. An old request ID alone does not prevent creating a duplicate after restart.
+| Action | Safe retry |
+| --- | --- |
+| Ordinary mutating control tool | Use the same unique `requestId` and identical arguments within the current app session. |
+| Definitive `busy` rejection | Read the latest state and use a new request ID. |
+| App restarted | List or read the affected pipelines and sources first. Session receipts do not survive restarts; an old ID cannot prevent a duplicate. |
+| Engine write, including publish or mutating `engine_call` | Reuse its separate durable `operationId` only for the same command. |
+| Respond to a human request | `requestId` identifies the human request; `operationId` identifies the durable response operation. |
 
-Engine writes use a separate durable `operationId`, including `pipeline_publish` and mutating `engine_call` operations. Reuse that operation ID only for the same command. For a human response, `engine_call`'s `requestId` identifies the human request; `operationId` identifies the durable response operation. They serve different purposes.
+`artifact_download` returns integrity-checked metadata and base64 content. Responses are limited to **8 MiB**, including encoding and metadata. Open or export larger files in the app.
 
-`artifact_download` returns integrity-checked metadata and base64 content. Control responses are limited to **8 MiB**, including encoding and metadata, so larger files should be opened or exported in the app.
+</details>
 
 [Choose block connections](/docs/guides/block-connections) · [Add external MCP tools](/docs/guides/mcp-tools) · [Command line](/docs/cli)

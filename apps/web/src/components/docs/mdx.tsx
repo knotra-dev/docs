@@ -40,14 +40,14 @@ import { ul } from './mdx-components/ul'
 import { a } from './mdx-components/a'
 import { p } from './mdx-components/p'
 import { WorkflowWalkthrough } from './workflow-walkthrough'
-import { WorkspaceTour } from './workspace-tour'
-import { FirstSteps, HowItWorks, CommonQuestions } from './visual-guides'
+import { CommonQuestions } from './visual-guides'
+import { DocScreenshot } from './doc-screenshot'
+import { MermaidDiagram } from './mermaid-diagram'
 
 const components = {
+  DocScreenshot,
+  MermaidDiagram,
   WorkflowWalkthrough,
-  WorkspaceTour,
-  FirstSteps,
-  HowItWorks,
   CommonQuestions,
   Image,
   Alert,

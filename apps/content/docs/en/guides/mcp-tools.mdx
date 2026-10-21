@@ -1,58 +1,99 @@
 ---
 title: Add an MCP server
-description: Connect external tools in Settings, then use them in Tool and AI agent blocks.
+description: Connect a server, enable its tools, and choose which blocks can use them.
+toc: false
 ---
 
-Use an external MCP server to give a pipeline access to its tools. Save the server once in **Settings → MCP servers**, then choose tools in individual blocks.
-
-Want an assistant to create pipelines and manage Knotra itself? Use [Control Knotra with MCP](/docs/guides/control-knotra). That is a separate connection from the external servers described here.
+**Connect once. Enable tools. Grant them to a block.** This lets a pipeline call an external service. To let an assistant edit Knotra itself, use [Control Knotra with MCP](/docs/guides/control-knotra).
 
 ## Connect and choose allowed tools
 
-1. Open the native desktop app and choose **Settings → MCP servers → Add server**.
-2. Enter a useful **Server name** and its **MCP server URL**. Use the server's MCP endpoint over HTTPS, or HTTP on localhost. URL parameters, fragments, and credentials embedded in the URL are not supported.
-3. If required, paste its bearer token into **Access token**, without the `Bearer` prefix.
-4. Choose **Connect and load tools**. This discovers the tool catalog; it does not execute any tool.
-5. Check the tools your pipelines may use, then choose **Save server**. New tools start disabled.
+1. Click **Settings** at the bottom left, then **MCP servers → Add server**.
+2. Enter a **Server name** and your service's **MCP server URL**. Use HTTPS, or HTTP on localhost. URL parameters, fragments, and embedded credentials are unsupported.
+3. If required, enter an **Access token** without the `Bearer` prefix.
+4. Click **Connect and load tools**. Under **Enabled tools**, check only the tools to allow.
+5. Click **Save server**.
 
-The server name, endpoint, catalog, and enabled tools survive app restarts. Tokens stay in the operating system credential store and are excluded from workspace backups. To edit a saved token, leave the field blank to retain it, enter a replacement, or select **Remove saved token**. If you change the server URL, explicitly re-enter or remove its token before connecting to the new address.
+<DocScreenshot src="/images/mcp-tools.webp" width={1000} height={747} alt="MCP server form with Research library, an example MCP endpoint, Search documents checked, and Read document unchecked" caption="Settings → MCP servers. The Research library name and example.test URL are illustrative; enter your real server endpoint." />
 
-This setup supports HTTP MCP endpoints. Local command/stdio servers still require an engine profile. OAuth browser sign-in is not part of this form; use a server that accepts the optional bearer token or no authentication.
+**Check:** your server appears in the saved list with its enabled-tool count.
+
+Discovery does not execute tools. New tools start **disabled**. Tokens stay in the operating system credential store and are excluded from workspace backups.
+
+<details>
+<summary>Supported connections and token changes</summary>
+
+The native form supports HTTP MCP endpoints with an optional bearer token. Local command/stdio servers require an engine profile; browser OAuth sign-in is not supported in this form.
+
+Names, endpoints, catalogs, and enabled tools survive restarts. When editing a token, leave it blank to keep it, enter a replacement, or choose **Remove saved token**. After changing the URL, explicitly re-enter or remove its token before connecting to the new address.
+
+</details>
 
 ## Call a tool from a block
 
-1. Add or select a **Tool** block in your pipeline.
-2. Choose **MCP server**, then choose a tool by name. Only enabled tools are offered.
-3. Read its description and enter its arguments. Simple object schemas have labeled form fields. Use the input mapping controls for values from previous blocks; complex custom arguments remain available in advanced configuration.
-4. Connect its result to the next block or a workflow output.
+1. Return to your pipeline and click a **Tool** block.
+2. In the right panel, choose **MCP server**, then **Tool name**. Only enabled tools appear.
+3. Under **Tool arguments**, choose **Enter values**. Fill the displayed fields; for the pictured **Search documents** tool, type your search in **query**.
 
-For example, if a tool has a required `query` string, enter that query in its form or bind it to a previous block's text output. You do not need to write a server ID or tool ID.
+<DocScreenshot src="/images/guide-tool-block.webp" width={340} height={877} alt="Tool block settings showing Research library, Search documents, and the tool argument form" caption="Tool block → MCP server → Tool name → Tool arguments. This example uses Search documents." />
 
-When you select a tool, a new block uses the tool's advertised structured result schema when available. Tools without that schema use an array of content blocks. Custom output definitions are preserved; **Use tool response format** explicitly adopts the selected tool's format when needed. Check downstream bindings after changing an existing result's shape.
+**Check:** the form matches the selected tool. Connect its result to the next block or a workflow output.
 
-If a different tool does not accept fields saved for the old one, Knotra lists them and offers **Remove unsupported fields**. Review that list before removing them; compatible values are kept.
+<details>
+<summary>Complex arguments, result formats, and switching tools</summary>
+
+Simple object schemas have labeled fields; complex custom arguments remain in advanced configuration. To pass this block's inputs, choose **Use block inputs (CEL)** under **Tool arguments** and supply an expression. You do not need server or tool IDs.
+
+New blocks use the tool's advertised structured result schema, or an array of content blocks when none is advertised. Custom output definitions are preserved. **Use tool response format** explicitly adopts the selected tool's format; check downstream bindings after changing an existing result's shape.
+
+When switching tools, Knotra lists saved fields the new tool cannot accept. Review **Remove unsupported fields** before using it; compatible values are kept.
+
+</details>
 
 ## Give an agent selected tools
 
-Select an **AI agent** block and check the individual tools in its **MCP tools** list. The agent decides when to call those tools while following its instructions. Enabling a server in Settings does not grant every tool to every agent.
+1. Click an **AI agent** block in your pipeline.
+2. In its right panel, find **MCP tools**.
+3. Under your server's name, check the individual tools this agent may use.
 
-For example, enable a server's search and document tools in Settings, then grant only search to a research agent. Add document access to another agent only when its task needs it.
+<DocScreenshot src="/images/guide-agent-permissions.webp" width={340} height={877} alt="AI agent settings showing individual MCP tool grants" caption="AI agent → MCP tools. Check only the tools this agent needs." />
+
+**Check:** the required tool is checked in this block. The agent decides when to call it. Enabling tools in Settings does not grant them to every agent.
+
+<MermaidDiagram title="Two places to allow a tool" chart={'flowchart LR\n A["External MCP server"] --> B["Settings: enabled tools"]\n B --> C["Tool block: one tool"]\n B --> D["Agent: selected tools"]\n C --> E["Workflow result"]\n D --> E'} />
 
 ## Change a server safely
 
-Use **Edit**, **Refresh tools**, or **Remove** beside its saved name. Refresh updates descriptions and schemas while retaining existing permissions. It does not enable newly discovered tools. Missing enabled tools stay visible for review.
+1. Open **Settings → MCP servers** and find the saved server.
+2. To edit, click the **server name**. To reload its catalog, click the **circular-arrow button** on the right. The **trash button** removes the connection.
 
-Saved changes appear immediately in the app. The managed local engine applies connection changes automatically once every unfinished run completes, including paused runs, human waits, and scheduled retries. Existing runs keep their admitted endpoint and credential. You do not need to restart the engine manually. Pending changes survive reopening Knotra.
+<DocScreenshot src="/images/guide-mcp-manage.webp" width={1000} height={171} alt="Saved Research library MCP server with its clickable name, circular-arrow refresh button, and trash remove button" caption="Click the server name to edit; the right-side arrow refreshes tools and the trash button removes the server." />
 
-For an existing engine configured elsewhere, the engine owner manages its servers and credentials. Your saved local settings do not change that engine or switch the app away from it.
+**Check after refresh:** existing permissions remain; new tools are disabled and missing enabled tools stay visible for review.
+
+The local engine applies changes after **all unfinished runs complete**, including paused runs, human waits, and scheduled retries.
+
+<details>
+<summary>Pending changes and separately configured engines</summary>
+
+Saved changes appear immediately in the app and survive restarts. Existing runs keep their admitted endpoint and credential. The managed engine applies changes automatically when idle; a manual restart is unnecessary.
+
+For an engine configured elsewhere, its owner manages servers and credentials. Your local settings do not change that engine or switch the app away from it.
+
+</details>
 
 ## Fix connection problems
+
+<details>
+<summary>No tools, unavailable tools, or validation errors</summary>
 
 | What you see | What to check |
 | --- | --- |
 | No tools loaded | Use the actual MCP endpoint, check the server, and verify the optional token. An ordinary website URL is not an MCP endpoint. |
 | A tool is unavailable in a block | Enable it in Settings and check that the server still advertises it. For an agent, also check that block's tool grant. |
-| Connection changes are waiting | Finish or cancel unfinished runs, including human waits, before the engine can apply the pending configuration. |
+| Connection changes are waiting | Finish or cancel unfinished runs, including human waits, before the engine can apply pending configuration. |
 | Arguments or results fail validation | Check the selected tool's schema, unsupported saved fields, and its content or structured response format. |
+
+</details>
 
 [Choose block connections](/docs/guides/block-connections) · [Control Knotra with MCP](/docs/guides/control-knotra)

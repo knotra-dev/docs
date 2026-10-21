@@ -1,9 +1,10 @@
 ---
 title: Choose block connections
 description: Select models, code environments, and tools directly in each pipeline block.
+toc: false
 ---
 
-Open a pipeline and select the block you want to configure. Choose its real connection from the inspector. You do not need to declare names such as `writer` or type a model ID into a block.
+Click a block on the canvas. Its settings open on the right. Follow the section for the connection you need; click any picture to enlarge it.
 
 | Block | What to choose | Where the choices come from |
 | --- | --- | --- |
@@ -14,38 +15,83 @@ Open a pipeline and select the block you want to configure. Choose its real conn
 
 ## Choose a model
 
-1. Open **Settings → Model providers → Add source** and [save a source](/docs/guides/connect-models#save-sources-in-desktop).
-2. Return to a **Model** or **AI agent** block.
-3. Choose its **Source**, then choose its **Model** from that source's catalog. **Use provider default** uses the source's configured default.
+1. If you have no saved source, click **Settings → Model providers → Add source** and [save one](/docs/guides/connect-models#save-sources-in-desktop).
+2. Return to your pipeline and click its **Model** or **AI agent** block.
+3. In the right panel, choose **Source**, then **Model**. **Use provider default** uses the source's configured model.
 
-For example, use a Codex source in a drafting block and an API source in a checking block. Each block keeps its own selection. Changing one block's connection does not change another block that previously shared its internal binding.
+<DocScreenshot src="/images/beginner-06-model.webp" width={340} height={717} alt="Answer block settings showing Source set to My model and Model set to Use provider default" caption="Choose a source first, then its model. My model is the sample source name." />
 
-Saved model catalogs remain available while the local engine is stopped. If a model is missing, use **Manage model sources → Refresh models** for its source. A saved selection that is no longer available stays visible so you can replace it deliberately.
+**Check:** the selected source and model stay in this block. Changing it leaves other blocks' selections intact.
+
+<details>
+<summary>Missing models and offline catalogs</summary>
+
+Saved catalogs stay available while the local engine is stopped. Use **Manage model sources → Refresh models** for a missing model. Unavailable saved selections stay visible so you can replace them deliberately.
+
+</details>
 
 ## Run code in an environment
 
-Start or connect the engine in Settings, then select a **Code** block and choose **Code environment**. The bundled environments are **Python sandbox** for Python and **Node.js sandbox** for JavaScript. These are isolated execution environments supplied by the engine.
+1. Open **Settings** and start the local engine or connect an existing engine.
+2. Return to your pipeline and click a **Code** block.
+3. Find **Code environment** in its right panel. Choose **Python sandbox** for Python or **Node.js sandbox** for JavaScript.
 
-An **AI agent** can use the same environments. Select its environment, then enable only the **Code permissions** it needs:
+<DocScreenshot src="/images/guide-code-environment.webp" width={340} height={877} alt="Code block settings showing the Code environment selector" caption="Code block → Code environment. Choose the environment that matches your script." />
 
-- **Read files** lets it inspect files in that environment.
-- **Write files** lets it create or change files there.
-- **Run commands** lets it execute commands there.
+**Check:** the selected environment appears under **Code environment**. If no environments appear, connect an engine first.
 
-For example, an agent summarizing existing files needs Read files; an agent writing a report also needs Write files. Connecting a model alone does not grant file or command access.
+To give an agent file or command access:
 
-The dropdown reflects environments configured on the selected engine. To add a custom image or environment, the engine owner must configure its profile; Desktop does not install arbitrary environments. Secret values are also supplied by engine configuration. Pipeline files hold secret references rather than their values.
+1. Click the **AI agent** block.
+2. Choose its **Code environment**.
+3. Under **Code permissions**, check only the permissions its task needs.
+
+<DocScreenshot src="/images/guide-agent-permissions.webp" width={340} height={877} alt="AI agent settings showing its Code environment and individual Code permissions" caption="AI agent → Code permissions. File and command access are separate choices." />
+
+| Agent permission | Allows |
+| --- | --- |
+| **Read files** | Inspect files in the environment. |
+| **Write files** | Create or change files. |
+| **Run commands** | Execute commands. |
+
+**Check:** only the intended permissions are checked. A model connection alone grants no file or command access.
+
+<details>
+<summary>Custom environments and secrets</summary>
+
+The dropdown shows environments configured on the selected engine. Its owner must configure a profile to add custom images or environments; Desktop does not install arbitrary environments. Engine configuration supplies secret values. Pipeline files keep references to secrets, not their values.
+
+</details>
 
 ## Select external tools
 
-[Add an MCP server](/docs/guides/mcp-tools) in Settings and enable its tools. A **Tool** block calls one chosen tool with the supplied arguments. An **AI agent** can choose when to call the individual tools you check in its **MCP tools** list.
+1. [Add an MCP server](/docs/guides/mcp-tools) in Settings and enable the tools you need.
+2. Return to your pipeline and click a **Tool** block.
+3. In its right panel, choose **MCP server**, then **Tool name**. Under **Tool arguments**, choose **Enter values** and fill the displayed fields.
 
-The server's allowed tools and the agent's selected tools both apply. Newly discovered tools are not automatically enabled.
+<DocScreenshot src="/images/guide-tool-block.webp" width={340} height={877} alt="Tool block settings with an MCP server, selected tool, and its argument fields" caption="Tool block → MCP server → Tool name → Tool arguments. Only enabled tools appear." />
+
+**Check:** the selected tool's description and argument fields appear. For an **AI agent**, check individual tools in its **MCP tools** section instead.
+
+<MermaidDiagram title="Tool access has two gates" chart={'flowchart LR\n  S[Server tools] --> E[Explicitly enabled tools]\n  E --> T[Tool block: one tool]\n  E --> A[Agent: selected tools]'} />
+
+A **Tool** block calls one tool with your arguments. An **AI agent** decides when to call its selected tools. Server permissions and agent selections both apply; newly discovered tools stay disabled.
 
 ## Review the pipeline's connections
 
-Open **Resources** while a pipeline is selected. Its Models, MCP tools, Sandboxes, and Secret references tabs show the connections used by its blocks. Sandboxes are the code environments. Use a block's **Set up** action to open the relevant controls. **Available engine connections** shows what the connected engine supplies; availability is checked again when a run starts.
+1. Click **Resources** in the left sidebar.
+2. Choose **Models**, **MCP tools**, **Sandboxes**, or **Secret references**.
+3. Find the block to inspect. Click **Set up** beside it to return to its settings.
 
-Names such as `writer` are internal links in the pipeline file. Knotra creates them when you choose connections. **Workflow → Resources → Advanced resource bindings** exposes these links for direct editing. Editing a shared binding there affects every block using it, so use the block selectors for ordinary changes.
+<DocScreenshot src="/images/block-connections.webp" width={1440} height={940} alt="Resources Models tab listing Research brief connections with a Set up button beside each block" caption="Resources → Models. Each row names a block and its selected source." />
+
+**Check:** each block uses the intended connection. **Available engine connections** lists what the engine supplies; Knotra checks availability again when a run starts.
+
+<details>
+<summary>Advanced: edit shared resource bindings</summary>
+
+**Workflow → Resources → Advanced resource bindings** exposes the internal links in the pipeline file. Editing a shared binding changes every block using it. Use block selectors for ordinary connection changes.
+
+</details>
 
 [Connect model sources](/docs/guides/connect-models) · [Add MCP tools](/docs/guides/mcp-tools) · [Start your first pipeline](/docs/getting-started)

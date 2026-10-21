@@ -40,7 +40,7 @@ export function MobileNav({ messages, menuLinks }: MobileNavProps) {
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
         <Button
-          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
           variant="ghost"
         >
           <Icons.menu className="size-5" />

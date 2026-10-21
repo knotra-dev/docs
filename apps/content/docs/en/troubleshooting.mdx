@@ -1,13 +1,51 @@
 ---
 title: Common questions
-description: Open the question that matches what you see in the app.
+description: Find the screen, check the connection, and continue your run.
 toc: false
 ---
 
-Choose the question that matches your screen. If you need your teammate's help, send them the displayed error and the name of the run.
+## The app is not connected
+
+1. Open **Settings**. [Save a model source](/docs/guides/connect-models#save-sources-in-desktop) if none is saved yet.
+2. Keep Docker running, then scroll to **Local engine** and click **Start local engine**.
+3. Wait for **Running** and a connected engine. Reopen your pipeline and click **Run**.
+
+<DocScreenshot src="/images/beginner-07-engine.webp" width={1000} height={245} alt="Local engine showing Running and the Stop local engine button after startup" caption="After startup, the status changes to Running and the button becomes Stop local engine." />
+
+Using a teammate's server? Open **Settings → Existing engine**, check its address and token, then click **Connect engine**. [Shared-engine setup](/docs/getting-started#connect-to-a-shared-engine) explains what to ask for. You can edit pipelines offline.
+
+## A model is missing or the run will not start
+
+1. Open the pipeline and click its model or agent block.
+2. Check **Source**, then choose **Model**. Repeat for other model blocks if needed.
+3. For a missing model, click **Manage model sources**, then **Refresh models** for that source. Return to the block and select its model.
+4. Click **Save** and fix any validation messages before choosing **Run** again.
+
+<DocScreenshot src="/images/guide-source-actions.webp" width={1000} height={174} alt="Saved model source row with its name, Refresh models arrow, and Remove button" caption="In Model providers, use the circular arrow beside your saved source to refresh its model list." />
+
+The engine profile must supply the pipeline's tools and environments too. For sign-in, API-key, or Ollama errors, use [model connection fixes](/docs/guides/connect-models#fix-connection-problems).
+
+## My run is waiting for me
+
+1. Click **Inbox** in the sidebar and open the request with your pipeline's name.
+2. Read **What to do** and **From previous steps**.
+3. Fill in the requested response fields and click **Submit response**.
+
+<DocScreenshot src="/images/beginner-09-reply.webp" height={1000} alt="Greeting run paused at a Human review with Your answer and Submit response" caption="This example needs a text reply. Follow your own request's fields; an approval request uses different fields." />
+
+If there is no Inbox request, open **Runs → your run → Live graph**, click the waiting block, and read its **Activity**. The run may be waiting for another step or a scheduled retry.
+
+<details>
+<summary>Other questions</summary>
 
 <CommonQuestions />
 
-For Codex/Claude Code sign-in, unavailable models, compatible-server API keys, and local Ollama errors, use the [model connection troubleshooting table](/docs/guides/connect-models#fix-connection-problems).
+</details>
 
-For server discovery, disabled tools, or argument schemas, use [MCP tool troubleshooting](/docs/guides/mcp-tools#fix-connection-problems). For assistant control, check that Knotra is open, read the latest revisions after conflicts, and [reconcile uncertain actions after restart](/docs/guides/control-knotra#recover-an-uncertain-action).
+| More help | Open |
+| --- | --- |
+| Missing results | **Runs → your run → Outputs** for text; **Artifacts → file → Export** for files. The greeting lesson returns text. |
+| External tools, discovery, disabled tools, argument schemas | [MCP tool fixes](/docs/guides/mcp-tools#fix-connection-problems) |
+| Assistant conflicts or uncertain actions | [Control recovery](/docs/guides/control-knotra#recover-an-uncertain-action) — keep Knotra open and read fresh revisions. |
+
+Still stuck? Send your teammate the displayed error and the run's name.

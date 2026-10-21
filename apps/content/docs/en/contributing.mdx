@@ -3,7 +3,9 @@ title: Technical setup
 description: Developer instructions for preparing Knotra and editing this documentation site.
 ---
 
-Use prebuilt Docker images to run Knotra; the [Command line guide](/docs/cli) covers installation and your first workflow without a compiler. For Codex and Claude Code account connections, OpenAI-compatible servers, and local model setup, follow [Connect models and agents](/docs/guides/connect-models). This page covers building Knotra and editing its documentation. To explore an already prepared app, start with [First steps](/docs/getting-started).
+Building Knotra or editing this site? Choose the repository below. To use the app, follow [First steps](/docs/getting-started); to run a prebuilt image, follow the [Command line guide](/docs/cli). [Connect models and agents](/docs/guides/connect-models) covers provider setup.
+
+<MermaidDiagram title="The development workspace" chart={'flowchart TD\n  W[knotra-dev workspace] --> L[repos.lock.json: pinned revisions]\n  L --> E[repos/engine: runtime and CLI]\n  L --> D[repos/desktop: desktop app]\n  L --> S[repos/docs: this documentation]\n  E -->|Sync canonical assets| D'} />
 
 ## Run without building
 
@@ -17,7 +19,14 @@ ollama pull qwen3.5:9b
 docker compose -f compose.container.yaml up -d --wait
 ```
 
-Connect desktop to `http://127.0.0.1:8787`, or follow the [CLI guide](/docs/cli) to use the CLI from the same image. Engine data persists in `.knotra-container`; PostgreSQL uses a Docker volume. Stop with `docker compose -f compose.container.yaml down` to keep both. The engine controls the host Docker socket, so run it as a trusted operator. Use the [deployment guide](https://github.com/knotra-dev/engine/wiki/Deployment) for pinned versions, remote access, cloud models, and backups.
+In Desktop, open **Settings → Existing engine**, enter `http://127.0.0.1:8787` as **Engine base URL**, then click **Connect engine**. Or follow the [CLI guide](/docs/cli) to use the same image from a terminal.
+
+<details>
+<summary>Saved data, stopping, and deployment</summary>
+
+Engine data persists in `.knotra-container`; PostgreSQL uses a Docker volume. Stop with `docker compose -f compose.container.yaml down` to keep both. The engine controls the host Docker socket, so run it as a trusted operator. Use the [deployment guide](https://github.com/knotra-dev/engine/wiki/Deployment) for pinned versions, remote access, cloud models, and backups.
+
+</details>
 
 ## Prepare the development workspace
 
@@ -37,7 +46,7 @@ Bootstrap installs dependencies and clones the revisions in `repos.lock.json`. I
 
 The bundled `local` profile expects Ollama at `http://127.0.0.1:11434` with `qwen3.5:9b` installed. Install and pull the model separately; workspace setup does not download model weights or make paid calls.
 
-In desktop Settings, save `http://127.0.0.1:8787` and connect. Give this address and the prepared profile name to the person using the app. Keep the engine running while they work. `make dev` stops the engine when desktop exits.
+In Desktop, open **Settings → Existing engine**, enter `http://127.0.0.1:8787` as **Engine base URL**, then click **Connect engine**. Give this address and the prepared profile name to the person using the app. Keep the engine running while they work. `make dev` stops the engine when Desktop exits.
 
 ## Run parts separately
 
